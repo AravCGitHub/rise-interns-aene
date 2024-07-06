@@ -1,115 +1,84 @@
-import math
-from cvxopt import matrix, solvers
-import numpy as np
 import random
+import numpy as np
+from cvxopt import matrix, solvers
 from advertiser import Advertiser
 from impression import Impression
 
-# def clamp(n, min, max): 
-#     if n < min: 
-#         return min
-#     elif n > max: 
-#         return max
-#     else: 
-#         return n 
-
-def syntheticInstance(numAds, numImps):
-    numTypes = 8
-    ads = []
-    for i in range(numAds):
-        ads.append(Advertiser(numTypes))
-    imps = []
+def createSyntheticInstance(numAdvs, numImps):
+    numTypes = 10
+    advsList = []
+    for i in range(numAdvs):
+        advsList.append(Advertiser(numTypes))
+    impsList = []
     for i in range(numImps):
-        sections = (6.0 / numTypes)
-        rand = random.gauss(0,1) + 3
         type = random.randint(0, numTypes-1)
-        # clamp(math.floor(0.5 + (rand / sections)), 1, numTypes)
-        imps.append(Impression(type))
-    return ads, imps
+        impsList.append(Impression(type))
+    return advsList, impsList
 
-a, i = syntheticInstance(2,2)
-
-budgetsArr = []
-for x2 in a:
-    budgetsArr.append(x2.returnBudget())
-
-def createMatrixB(budgets, imps, ads):
-    impressionsArr = [1] * imps
-    advertisersArr = [0] * (imps * ads)
-    return budgetsArr + impressionsArr + advertisersArr
-
-# print(createMatrixB(budgetsArr, 3, 5))
-
-
-def createMatrixC(imps, ads):
-    matrixC = []
-    for a in ads:
-        for i in imps:
-            matrixC.append(-1*a.returnValuation()[i.returnType()])
-
-    return matrixC
-
-# for j in a:
-#     print(j)
-
-# for k in i:
-#     print(k.returnType())
-
-def createMatrixA(imps, ads):
+def createMatrixA(advs, imps):
+    # Part 1: Advertiser Constraints
     matrixA = []
-    for count in range(len(ads)):
-        aArr = []
-        for i in range(len(ads)):
-            # currAd += 1
+    for count in range(len(advs)):
+        aList = []
+        for i in range(len(advs)):
             if i == count:
                 temp = [1.0] * len(imps)
-                aArr += temp
+                aList += temp
             else:
                 temp = [0.0] * len(imps)
-                aArr += temp
-        matrixA.append(aArr)
-
+                aList += temp
+        matrixA.append(aList)
+    # Part 2: Impression Constraints
     zeroBefore = 0
     zeroAfter = len(imps)-1
     for i in range(len(imps)):
         temp = zeroBefore*[0.0] + [1.0] + zeroAfter*[0.0]
         zeroBefore += 1
         zeroAfter -=1
-        temp *= len(ads)
+        temp *= len(advs)
         matrixA.append(temp)
-
+    # Part 3: Weight Constraints
     zeroBefore = 0
-    zeroAfter = len(imps)*len(ads)-1
-    for i in range(len(imps)*len(ads)):
+    zeroAfter = len(imps)*len(advs)-1
+    for i in range(len(imps)*len(advs)):
         temp = zeroBefore*[0.0] + [-1.0] + zeroAfter*[0.0]
         zeroBefore += 1
         zeroAfter -=1
         matrixA.append(temp)
     return matrixA
 
-npListA = np.array(createMatrixA(i, a))
-npListA.transpose()
-A = matrix(npListA)
+def createVectorB(advs, imps):
+    vectorB = []
+    budgetsList = []
+    for bud in advs:
+        budgetsList.append(bud.returnBudget())
+    impressionsList = [1] * len(imps)
+    advertisersList = [0] * (len(imps) * len(advs))
+    vectorB = budgetsList + impressionsList + advertisersList
+    return vectorB
 
-npListB = createMatrixB(budgetsArr, len(i), len(a))
-print(npListB)
-# npListB.transpose()
-# print(npListB)
-# B = matrix(npListB)
-B = matrix(npListB, (8, 1), 'd')
-# print(B)
+def createVectorC(advs, imps):
+    vectorC = []
+    for a in advs:
+        for i in imps:
+            vectorC.append(-1*a.returnValuation()[i.returnType()])
+    return vectorC
 
-# print(A)
+def lpSolve(advs, imps):
+    npMatrixA = np.array(createMatrixA(advs,imps))
+    npMatrixA.transpose()
+    A = matrix(npMatrixA)
+    npVectorB = createVectorB(advs,imps)
+    B = matrix(npVectorB, (npMatrixA.shape[0], 1), 'd')
+    C = matrix(createVectorC(advs, imps))
+    sol = solvers.lp(C, A, B)
+    return sol['x']
 
-C = matrix(createMatrixC(i, a))
-# print(C)
+def main():
+    a, i = createSyntheticInstance(5,3)
+    print(lpSolve(a,i))
 
-# print("C size:", C.size)
-# print("A size:", A.size)
-# print("B size:", B.size)
+main()
 
-sol = solvers.lp(C, A, B)
-print(sol['x'])
-
-#make graph for time v. profit for several algorithms by varying synthetic instance size using matplotlib
-#objective value v impressions, time v impressions, comparing cvxopt and algo 
+# make graph for time v. profit for several algorithms by varying synthetic instance size using matplotlib
+# objective value v impressions, time v impressions, comparing cvxopt and algo

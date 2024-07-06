@@ -1,6 +1,7 @@
 import random
 
 class Advertiser:
+    
     def __init__(self, numTypes):
         self.budget = random.randint(1, 100)
         self.valuation = []
@@ -9,3 +10,9 @@ class Advertiser:
 
     def __str__(self):
         return "Budget: " + str(self.budget) + " - Valuations:" + str(self.valuation)
+    
+    def returnBudget(self):
+        return self.budget
+    
+    def returnValuation(self):
+        return self.valuation
