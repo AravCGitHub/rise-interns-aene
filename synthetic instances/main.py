@@ -84,13 +84,20 @@ def objectiveValue(solved, vectorC):
     return dot
 
 def main():
-    a, i = createSyntheticInstance(50,100)
-    solved, timeTaken = (lpSolve(a,i))
-    print(timeTaken)
-    objVal = objectiveValue(solved, createVectorC(a,i))
-    print(objVal)
+    for count in range(10):
+        a, i = createSyntheticInstance(10,random.randint(1,100))
+        solved, timeTaken = (lpSolve(a,i))
+        print(timeTaken)
+        objVal = objectiveValue(solved, createVectorC(a,i))
+        print(objVal)
+        plt.plot(timeTaken, objVal, 'ro')
+        plt.xlabel('Time Taken')
+        plt.ylabel('Objective Value')
+    plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/TimeVProfit.png')
+
 
 main()
 
 # make graph for time v. profit for several algorithms by varying synthetic instance size using matplotlib
 # objective value v impressions, time v impressions, comparing cvxopt and algo
+# obj value vs size
