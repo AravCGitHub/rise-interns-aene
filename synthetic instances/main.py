@@ -1,6 +1,8 @@
 import random
 import numpy as np
+import time
 from cvxopt import matrix, solvers
+import matplotlib.pyplot as plt
 from advertiser import Advertiser
 from impression import Impression
 
@@ -71,12 +73,22 @@ def lpSolve(advs, imps):
     npVectorB = createVectorB(advs,imps)
     B = matrix(npVectorB, (npMatrixA.shape[0], 1), 'd')
     C = matrix(createVectorC(advs, imps))
+    startTime = time.time()
     sol = solvers.lp(C, A, B)
-    return sol['x']
+    endTime = time.time()
+    return sol['x'], endTime - startTime
+
+def objectiveValue(solved, vectorC):
+    npSolv = np.array(solved).ravel()
+    dot = np.dot(npSolv * -1, vectorC)
+    return dot
 
 def main():
-    a, i = createSyntheticInstance(5,3)
-    print(lpSolve(a,i))
+    a, i = createSyntheticInstance(50,100)
+    solved, timeTaken = (lpSolve(a,i))
+    print(timeTaken)
+    objVal = objectiveValue(solved, createVectorC(a,i))
+    print(objVal)
 
 main()
 
