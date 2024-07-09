@@ -75,7 +75,7 @@ def main():
         solved, timeTaken = (optimal.lpSolve(a,i))
         print(timeTaken)
         objVal = objectiveValue(solved, optimal.createVectorC(a,i))
-        print(objVal)
+        print("CVXOPT Objective Value:", objVal)
         # plt.plot(timeTaken, objVal, 'ro')
         # plt.xlabel('Time Taken')
         # plt.ylabel('Objective Value')
