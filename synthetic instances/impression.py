@@ -6,6 +6,7 @@ class Impression:
         self.type = type
         self.displayTime = random.gauss(random.random(),1.5)
         self.valWithCurrAdv = 0
+        self.number = 0
 
     def __str__(self):
         return "Type: " + str(self.type)

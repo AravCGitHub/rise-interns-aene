@@ -62,4 +62,4 @@ def lpSolve(advs, imps):
     startTime = time.time()
     sol = solvers.lp(C, A, B)
     endTime = time.time()
-    return sol['x'], endTime - startTime
+    return np.array(sol['x']).ravel(), endTime - startTime
