@@ -24,6 +24,7 @@ def objectiveValue(solved, weights):
     return dot
 
 def main():
+    figure, axis = plt.subplots(1, 2)
     for count in range(20):
         numImps = random.randint(1,100)
         a, i = createSyntheticInstance(10,numImps) # fixed 10 advs, rand 1-50 imps
@@ -38,18 +39,45 @@ def main():
         algObj = objectiveValue(algSolved, weights)
         print("Alg1 Objective Value:", algObj)
         print("Time Taken:", algTimeTaken)
-
+# make graph for time v. profit for several algorithms by varying synthetic instance size using matplotlib
+# objective value v impressions, time v impressions, comparing cvxopt and algo
+# obj value vs size
         # Graphing Obj vs Imps
         if (count == 1):
-            plt.plot(numImps, optObj, 'bo', label = "CVXOPT")
-            plt.plot(numImps, algObj, 'ro', label = "Algorithm 1")
-            plt.legend()
+            axis[0].plot(numImps, optObj, 'bo', label = "CVXOPT")
+            axis[0].plot(numImps, algObj, 'ro', label = "Algorithm 1")
         else:
-            plt.plot(numImps, optObj, 'bo')
-            plt.plot(numImps, algObj, 'ro')
-        plt.xlabel('Number of Impressions')
-        plt.ylabel('Objective Value')
+            axis[0].plot(numImps, optObj, 'bo')
+            axis[0].plot(numImps, algObj, 'ro')
+        axis[0].set_xlabel('Number of Impressions')
+        axis[0].set_ylabel('Objective Value')
         # Graphing Time vs Imps
+        if (count == 1):
+            axis[1].plot(numImps, optTimeTaken, 'bo', label = "CVXOPT")
+            axis[1].plot(numImps, algTimeTaken, 'ro', label = "Algorithm 1")
+        else:
+            axis[1].plot(numImps, optTimeTaken, 'bo')
+            axis[1].plot(numImps, algTimeTaken, 'ro')
+        axis[1].set_xlabel('Number of Impressions')
+        axis[1].set_ylabel('Time Taken')
+    axis[0].legend()
+    axis[1].legend()
+    plt.tight_layout()
+    plt.savefig('/Users/lindsayk/Documents/GitHub/rise-interns-aene/TimeVProfit.png')
+
+main()
+
+# Graphing Obj vs Imps
+        # if (count == 1):
+        #     plt.plot(numImps, optObj, 'bo', label = "CVXOPT")
+        #     plt.plot(numImps, algObj, 'ro', label = "Algorithm 1")
+        #     plt.legend()
+        # else:
+        #     plt.plot(numImps, optObj, 'bo')
+        #     plt.plot(numImps, algObj, 'ro')
+        # plt.xlabel('Number of Impressions')
+        # plt.ylabel('Objective Value')
+# Graphing Time vs Imps
         # if (count == 1):
         #     plt.plot(numImps, optTimeTaken, 'bo', label = "CVXOPT")
         #     plt.plot(numImps, algTimeTaken, 'ro', label = "Algorithm 1")
@@ -59,32 +87,3 @@ def main():
         #     plt.plot(numImps, algTimeTaken, 'ro')
         # plt.xlabel('Number of Impressions')
         # plt.ylabel('Time Taken')
-    plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/TimeVProfit.png')
-
-main()
-
-# make graph for time v. profit for several algorithms by varying synthetic instance size using matplotlib
-# objective value v impressions, time v impressions, comparing cvxopt and algo
-# obj value vs size
-
-# figure, axis = plt.subplots(2)
-#         # Graphing Obj vs Imps
-#         if (count == 1):
-#             axis[0].plot(numImps, optObj, 'bo', label = "CVXOPT")
-#             axis[0].plot(numImps, algObj, 'ro', label = "Algorithm 1")
-#         else:
-#             axis[0].plot(numImps, optObj, 'bo')
-#             axis[0].plot(numImps, algObj, 'ro')
-#         axis[0].set_xlabel('Number of Impressions')
-#         axis[0].set_ylabel('Objective Value')
-#         # Graphing Time vs Imps
-#         if (count == 1):
-#             axis[1].plot(numImps, optTimeTaken, 'bo', label = "CVXOPT")
-#             axis[1].plot(numImps, algTimeTaken, 'ro', label = "Algorithm 1")
-#         else:
-#             axis[1].plot(numImps, optTimeTaken, 'bo')
-#             axis[1].plot(numImps, algTimeTaken, 'ro')
-#         axis[1].set_xlabel('Number of Impressions')
-#         axis[1].set_ylabel('Time Taken')
-#     axis[0].legend()
-#     axis[1].legend()
