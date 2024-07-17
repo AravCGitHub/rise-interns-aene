@@ -38,16 +38,15 @@ def solve(advs, imps, weights, lam, eps, numRounds):
             if (alloc >= (advs[a].budget) * (1 + eps)):
                 priorityScores[a] = priorityScores[a] / (1 + eps)
     # Final Check
+    difList = []
     for a in range (len(advs)):
         if (xMatrix[a].sum() > advs[a].budget):
-            print("Check Adv:",a)
+            # print("Check Adv:",a)
             valList = []
+            difList.append(xMatrix[a].sum() - advs[a].budget)
             for i in range (len(imps)):
                 valList.append(-weights[a*len(imps) + i] * xMatrix[a][i])
-            # print(valList)
-            count = 0
             while (xMatrix[a].sum() > advs[a].budget):
-                # print(valList)
                 minIndex = minInd(valList)
                 dif = xMatrix[a].sum() - advs[a].budget
                 if (xMatrix[a][minIndex] > dif):
@@ -56,4 +55,4 @@ def solve(advs, imps, weights, lam, eps, numRounds):
                     xMatrix[a][minIndex] = 0
                 valList[minIndex] = -weights[a*len(imps) + minIndex] * xMatrix[a][minIndex]
     endTime = time.time()
-    return xMatrix.ravel(), endTime - startTime
+    return xMatrix.ravel(), endTime - startTime, max(difList) if difList else 0
