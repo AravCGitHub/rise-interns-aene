@@ -128,7 +128,7 @@ def tuneEpsLam():
     eps_lam_dict1 = {}
     eps_lam_dict2 = {}
     for eps in frange(0.01, 1.0, 0.05):
-        for lam in frange(0.05, 0.5, 0.05):
+        for lam in frange(0.05, 1, 0.05):
             print("Epsilon:", eps, "Lambda:", lam)
             objArr = []
             for (a, i, weights) in zip(aArr, iArr, weightsArr):
@@ -150,8 +150,8 @@ def tuneEpsLam():
     plt.show()
 
 # main()
-test()
-# tuneEpsLam() # lam = 0.25, eps = 0.435
+# test()
+tuneEpsLam() # lam = 0.25, eps = 0.435
 
 # make heat map for eps vs lam testing - pick 5 synthetic instances of same size and find avg of obj on each
 # sort dictionary and implement best fit lines
