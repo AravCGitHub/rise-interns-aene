@@ -21,7 +21,7 @@ def createSyntheticInstance(numAdvs, numImps, seed = None):
     numTypes = 10
     advsList = []
     for i in range(numAdvs):
-        advsList.append(Advertiser(numTypes))
+        advsList.append(Advertiser(numTypes, False))
     impsList = []
     for i in range(numImps):
         type = random.randint(0, numTypes-1)
@@ -35,6 +35,7 @@ def objectiveValue(solved, weights):
 
 def main():
     figure, axis = plt.subplots(1, 2)
+    impsObjVal, impsTime = {}, {}
     optSolvedArr, alg1solvedArr, alg2solvedArr = [], [], []
     optTimeArr, alg1TimeArr, alg2TimeArr = [], [], []
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
@@ -69,9 +70,15 @@ def main():
         print("Alg2 Objective Value:", alg2Obj)
         print("Time Taken:", alg2TimeTaken)
         # Graphing
-        objArr = [optObjArr, alg1ObjArr, alg2ObjArr]
-        timeArr = [optTimeArr, alg1TimeArr, alg2TimeArr]
-        graph.graphObjandTimeVsImps(objArr, timeArr, numImpsArr)
+        objArr = [alg1ObjArr[count], alg2ObjArr[count]]
+        timeArr = [alg1TimeArr[count], alg2TimeArr[count]]
+        impsObjVal[numImps] = objArr
+        impsTime[numImps] = timeArr
+    numImpsArr = list(impsObjVal.keys())
+    numImpsArr.sort()
+    sortedImpsObjVal = [impsObjVal[i] for i in numImpsArr]
+    sortedImpsTime = [impsTime[i] for i in numImpsArr]
+    graph.graphObjandTimeVsImps(objArr, timeArr, numImpsArr)
 
 def test():
     a, i = createSyntheticInstance(50,1000, 1)
@@ -127,8 +134,8 @@ def tuneEpsLam():
         weightsArr.append(optimal.createVectorC(a,i))
     eps_lam_dict1 = {}
     eps_lam_dict2 = {}
-    for eps in frange(0.01, 1.0, 0.05):
-        for lam in frange(0.05, 1, 0.05):
+    for eps in frange(0.01, 1.0, 0.5):
+        for lam in frange(0.05, 1, 0.5):
             print("Epsilon:", eps, "Lambda:", lam)
             objArr = []
             for (a, i, weights) in zip(aArr, iArr, weightsArr):
