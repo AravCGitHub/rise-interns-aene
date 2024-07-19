@@ -76,11 +76,6 @@ class Advertiser:
     def returnImpressions(self):
         return self.impressions
     
-<<<<<<< Updated upstream
-=======
-
-    
->>>>>>> Stashed changes
 # Ways to corrupt instances:
    
 # Randomly multiply/divide valuations by 100
