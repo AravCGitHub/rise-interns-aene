@@ -36,7 +36,9 @@ class Advertiser:
     def returnImpressions(self):
         return self.impressions
     
-
-    
-    
-    
+# Ways to corrupt instances:
+   
+# Randomly multiply/divide valuations by 100
+# Remove random edges
+# Coin flip between exponential and uniform distribution (or any other distribution)
+# Randomly change random.expovariate(1) to random.expovariate(10 or 100)

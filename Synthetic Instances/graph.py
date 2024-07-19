@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from advertiser import Advertiser
 from impression import Impression
 
-def graphObjandTimeVsImps(objArr, timeArr, numImps):
+def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     figure, axis = plt.subplots(1, 2)
     objArrCVX, objArrAlg1, objArrAlg2, timeArrCVX, timeArrAlg1, timeArrAlg2 = [], [], [], [], [], []
     
@@ -24,28 +24,28 @@ def graphObjandTimeVsImps(objArr, timeArr, numImps):
         timeArrAlg1.append(timeArr[i][0])
         timeArrAlg2.append(timeArr[i][1])
  
-    # objModelCVX = np.poly1d(np.polyfit(numImps, objArrCVX, 3))
-    objModelAlg1= np.poly1d(np.polyfit(numImps, objArrAlg1, 3))
-    objModelAlg2 = np.poly1d(np.polyfit(numImps, objArrAlg2, 3))
+    # objModelCVX = np.poly1d(np.polyfit(numImpsArr, objArrCVX, 3))
+    objModelAlg1= np.poly1d(np.polyfit(numImpsArr, objArrAlg1, 3))
+    objModelAlg2 = np.poly1d(np.polyfit(numImpsArr, objArrAlg2, 3))
 
-    # timeModelCVX = np.poly1d(np.polyfit(numImps, timeArrCVX, 2))
-    timeModelAlg1 = np.poly1d(np.polyfit(numImps, timeArrAlg1, 2))
-    timeModelAlg2 = np.poly1d(np.polyfit(numImps, timeArrAlg2, 2))
+    # timeModelCVX = np.poly1d(np.polyfit(numImpsArr, timeArrCVX, 2))
+    timeModelAlg1 = np.poly1d(np.polyfit(numImpsArr, timeArrAlg1, 2))
+    timeModelAlg2 = np.poly1d(np.polyfit(numImpsArr, timeArrAlg2, 2))
 
     # Plot Data
-    # axis[0].scatter(numImps, objArrCVX, c='red', label='CVXOPT')
-    axis[0].scatter(numImps, objArrAlg1, c='green', label='Algorithm 1')
-    axis[0].scatter(numImps, objArrAlg2, c='blue', label='Algorithm 2')
-    # axis[1].scatter(numImps, timeArrCVX, c='red', label='CVXOPT')
-    axis[1].scatter(numImps, timeArrAlg1, c='green', label='Alg 1')
-    axis[1].scatter(numImps, timeArrAlg2, c='blue',label='Alg 2')
+    # axis[0].scatter(numImpsArr, objArrCVX, c='red', label='CVXOPT')
+    # axis[0].scatter(numImpsArr, objArrAlg1, c='green', label='Algorithm 1')
+    # axis[0].scatter(numImpsArr, objArrAlg2, c='blue', label='Algorithm 2')
+    # axis[1].scatter(numImpsArr, timeArrCVX, c='red', label='CVXOPT')
+    # axis[1].scatter(numImpsArr, timeArrAlg1, c='green', label='Algorithm 1')
+    # axis[1].scatter(numImpsArr, timeArrAlg2, c='blue',label='Algorithm 2')
 
-    # axis[0].plot(numImps, objModelCVX(numImps), color='red')
-    axis[0].plot(numImps, objModelAlg1(numImps), color='green')
-    axis[0].plot(numImps, objModelAlg2(numImps), color='blue')
-    # axis[1].plot(numImps, timeModelCVX(numImps), color='red')
-    axis[1].plot(numImps, timeModelAlg1(numImps), color='green')
-    axis[1].plot(numImps, timeModelAlg2(numImps), color='blue')
+    # axis[0].plot(numImpsArr, objModelCVX(numImpsArr), color='red')
+    axis[0].plot(numImpsArr, objArrAlg1, color='green')
+    axis[0].plot(numImpsArr, objArrAlg2, color='blue')
+    # axis[1].plot(numImpsArr, timeModelCVX(numImpsArr), color='red')
+    axis[1].plot(numImpsArr, timeArrAlg1, color='green')
+    axis[1].plot(numImpsArr, timeArrAlg2, color='blue')
 
     # Labels
     axis[0].set_xlabel('Number of Impressions')
@@ -57,7 +57,7 @@ def graphObjandTimeVsImps(objArr, timeArr, numImps):
     plt.tight_layout()
     # Save and Clear
 
-    plt.savefig('/Users/forev/rise-interns-aene/Images/ObjTimeVsImps.png')
+    plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImps.png')
     plt.cla()
     plt.clf()
     plt.close()
@@ -78,7 +78,7 @@ def graph(x, y, xlabel, ylabel):
     plt.plot(x, bestModel(x), color='red')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.savefig('/Users/forev/rise-interns-aene/Images/' + xlabel + 'Vs' + ylabel + '.png')
+    plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/' + xlabel + 'Vs' + ylabel + '.png')
     plt.cla()
     plt.clf()
     plt.close()

@@ -40,10 +40,9 @@ def main():
     optTimeArr, alg1TimeArr, alg2TimeArr = [], [], []
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
     numImpsArr = []
-    for count in range(20):
-        numImps = random.randint(100,1000)
-        numImpsArr.append(numImps)
-        a, i = createSyntheticInstance(50,numImps) # fixed 10 advs, rand 1-100 imps
+    for count in range(100):
+        numImps = count * 10
+        a, i = createSyntheticInstance(50, numImps) # fixed 10 advs, rand 1-100 imps
         weights = optimal.createVectorC(a,i)
         # Optimal Algorithm
         # optSolved, optTimeTaken = (optimal.lpSolve(a,i))
@@ -62,7 +61,7 @@ def main():
         print("Alg1 Objective Value:", alg1Obj)
         print("Time Taken:", alg1TimeTaken)
         # Algorithm 2
-        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,0.5,0.9,10) # lam = 0.1, eps = 1, numRounds = 20
+        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
         alg2Obj = objectiveValue(alg2Solved, weights)
         alg2solvedArr.append(alg2Solved)
         alg2TimeArr.append(alg2TimeTaken)
@@ -78,7 +77,7 @@ def main():
     numImpsArr.sort()
     sortedImpsObjVal = [impsObjVal[i] for i in numImpsArr]
     sortedImpsTime = [impsTime[i] for i in numImpsArr]
-    graph.graphObjandTimeVsImps(objArr, timeArr, numImpsArr)
+    graph.graphObjandTimeVsImps(sortedImpsObjVal, sortedImpsTime, numImpsArr)
 
 def test():
     a, i = createSyntheticInstance(50,1000, 1)
@@ -87,7 +86,7 @@ def test():
 
     for rounds in range (1,100):
         print("Rounds:", rounds)
-        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,0.25,0.435,rounds)
+        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,0.25,0.21,rounds)
         alg2Obj = objectiveValue(alg2Solved, weights)
         roundsArr.append(rounds)
         maxOverflowArr.append(maxOverflow)
@@ -156,9 +155,9 @@ def tuneEpsLam():
     plt.title('Objective Value Heatmap')
     plt.show()
 
-# main()
+main()
 # test()
-tuneEpsLam() # lam = 0.25, eps = 0.435
+# tuneEpsLam() # lam = 0.25, eps = 0.435
 
 # make heat map for eps vs lam testing - pick 5 synthetic instances of same size and find avg of obj on each
 # sort dictionary and implement best fit lines
@@ -167,3 +166,8 @@ tuneEpsLam() # lam = 0.25, eps = 0.435
 # End Goal: find tuned params for eps/lam and then test on larger and corrupted instances
 
 # New parameter tuning for eps and lam using more rounds and less jumps
+
+# use big datasets
+# transition to latex
+# difference plot
+# run cvxopt vs algs on smaller instances (cor and not)
