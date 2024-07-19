@@ -1,28 +1,68 @@
 import random
 from impression import Impression
+import math
+import sys
 
 class Advertiser:
     
-    def __init__(self, numTypes, isCorrupted):
+    def __init__(self, numTypes, corruptNum):
         self.budget = random.randint(1, 100)
         self.valuations = []
         self.impressions = [Impression(0)] * self.budget
         self.beta = 0
-        if isCorrupted:
-            for i in range(numTypes):
-                temp = random.expovariate(1)
-                rand = random.randint(1, 100)
-                if rand <= 5:
-                    temp *= 10
-                elif rand <= 10:
-                    temp /= 10
-                self.valuations.append(temp)
+        if corruptNum == 1:
+            self.corruption1(numTypes)
+        elif corruptNum == 2:
+            self.corruption2(numTypes)
+        elif corruptNum == 3:
+            self.corruption3(numTypes)
         else:
-            for i in range(numTypes):
-                self.valuations.append(random.expovariate(1))
+            self.noCorruption(numTypes)
+        
+
+    def noCorruption(self, numTypes):
+        for x in range(numTypes):
+            self.valuations.append(random.expovariate(1))
+
+    def corruption1(self, numTypes):
+        for i in range(numTypes):
+            self.valuations.append(self.capValuation(random.expovariate(0.01)))
+
+    def corruption2(self, numTypes):
+        for i in range(numTypes):
+            temp = random.expovariate(1)
+            rand = random.randint(1, 100)
+            if rand <= 10:
+                temp *= 10
+            elif rand <= 20:
+                temp /= 10
+            self.valuations.append(self.capValuation(temp))
+
+    def corruption3(self, numTypes):
+        for i in range(numTypes):
+            rand = random.randint(1,3)
+            if rand == 1:
+                self.valuations.append(self.capValuation(random.expovariate(0.1)))
+            elif rand == 2:
+                self.valuations.append(self.capValuation(random.expovariate(10)))
+            else:
+                self.valuations.append(self.capValuation(random.random()*10)) 
+
+    def capValuation(self, val):
+        max = (math.log(sys.float_info.max) + 1) * 0.25
+        if val > max:
+            return max
+        else:
+            return val
+
+
 
     def __str__(self):
-        return "Budget: " + str(self.budget)
+        # return "Budget: " + str(self.budget)
+        return "vals " + str(self.valuations)
+    
+    def __repr__(self):
+        return "vals " + str(self.valuations)
     
     def returnBudget(self):
         return self.budget
@@ -36,6 +76,11 @@ class Advertiser:
     def returnImpressions(self):
         return self.impressions
     
+<<<<<<< Updated upstream
+=======
+
+    
+>>>>>>> Stashed changes
 # Ways to corrupt instances:
    
 # Randomly multiply/divide valuations by 100
