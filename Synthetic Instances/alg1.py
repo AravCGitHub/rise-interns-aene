@@ -1,7 +1,6 @@
 import time
 import numpy as np
 
-
 def removeImpressionWithLowestVal(imps): # helper for algorithm
     for imp in imps:
         val = imp.valWithCurrAdv

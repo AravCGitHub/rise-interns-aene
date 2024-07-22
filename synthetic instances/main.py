@@ -15,13 +15,13 @@ def frange(start, stop, step):
         yield start
         start += step
 
-def createSyntheticInstance(numAdvs, numImps, seed = None):
+def createSyntheticInstance(numAdvs, numImps, seed = None, corruptNum = 0):
     if seed is not None:
         random.seed(seed)
     numTypes = 10
     advsList = []
     for i in range(numAdvs):
-        advsList.append(Advertiser(numTypes, False))
+        advsList.append(Advertiser(numTypes, corruptNum))
     impsList = []
     for i in range(numImps):
         type = random.randint(0, numTypes-1)
@@ -40,18 +40,20 @@ def main():
     optTimeArr, alg1TimeArr, alg2TimeArr = [], [], []
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
     numImpsArr = []
-    for count in range(100):
-        numImps = count * 10
-        a, i = createSyntheticInstance(50, numImps) # fixed 10 advs, rand 1-100 imps
+    numImps = 0
+    for loop in range(5):
+        print(loop)
+        numImps += 10
+        a, i = createSyntheticInstance(10, numImps, 1) # fixed 10 advs, rand 1-100 imps
         weights = optimal.createVectorC(a,i)
         # Optimal Algorithm
-        # optSolved, optTimeTaken = (optimal.lpSolve(a,i))
-        # optObj = objectiveValue(optSolved, weights)
-        # optSolvedArr.append(optSolved)
-        # optTimeArr.append(optTimeTaken)
-        # optObjArr.append(optObj)
-        # print("CVXOPT Objective Value:", optObj)
-        # print("Time Taken:", optTimeTaken)
+        optSolved, optTimeTaken = (optimal.lpSolve(a,i))
+        optObj = objectiveValue(optSolved, weights)
+        optSolvedArr.append(optSolved)
+        optTimeArr.append(optTimeTaken)
+        optObjArr.append(optObj)
+        print("CVXOPT Objective Value:", optObj)
+        print("Time Taken:", optTimeTaken)
         # Algorithm 1
         alg1Solved, alg1TimeTaken = alg1.solve(a,i,1)
         alg1Obj = objectiveValue(alg1Solved, weights)
@@ -69,8 +71,8 @@ def main():
         print("Alg2 Objective Value:", alg2Obj)
         print("Time Taken:", alg2TimeTaken)
         # Graphing
-        objArr = [alg1ObjArr[count], alg2ObjArr[count]]
-        timeArr = [alg1TimeArr[count], alg2TimeArr[count]]
+        objArr = [optObjArr[loop], alg1ObjArr[loop], alg2ObjArr[loop]]
+        timeArr = [optTimeArr[loop], alg1TimeArr[loop], alg2TimeArr[loop]]
         impsObjVal[numImps] = objArr
         impsTime[numImps] = timeArr
     numImpsArr = list(impsObjVal.keys())
