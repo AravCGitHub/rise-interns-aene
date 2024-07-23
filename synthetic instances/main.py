@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from advertiser import Advertiser
 from impression import Impression
 import seaborn as sns
-import oldAlg1
+import brokenAlg1
 
 def frange(start, stop, step):
     while start < stop:

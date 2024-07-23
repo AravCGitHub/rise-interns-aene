@@ -55,8 +55,6 @@ class Advertiser:
         else:
             return val
 
-
-
     def __str__(self):
         # return "Budget: " + str(self.budget)
         return "vals " + str(self.valuations)

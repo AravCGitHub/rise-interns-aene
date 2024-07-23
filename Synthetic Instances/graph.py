@@ -40,12 +40,12 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     # axis[1].scatter(numImpsArr, timeArrAlg1, c='green', label='Algorithm 1')
     # axis[1].scatter(numImpsArr, timeArrAlg2, c='blue',label='Algorithm 2')
 
-    axis[0].plot(numImpsArr, objArrCVX, color='red', label='CVXOPT')
-    axis[0].plot(numImpsArr, objArrAlg1, color='green', label='Algorithm 1')
-    axis[0].plot(numImpsArr, objArrAlg2, color='blue', label='Algorithm 2')
-    axis[1].plot(numImpsArr, timeArrCVX, color='red', label='CVXOPT')
-    axis[1].plot(numImpsArr, timeArrAlg1, color='green', label='Algorithm 1')
-    axis[1].plot(numImpsArr, timeArrAlg2, color='blue', label='Algorithm 2')
+    axis[0].plot(numImpsArr, objArrCVX, c='red', label="CVXOPT")
+    axis[0].plot(numImpsArr, objArrAlg1, c='green', label='Algorithm 1')
+    axis[0].plot(numImpsArr, objArrAlg2, c='blue', label='Algorithm 2')
+    axis[1].plot(numImpsArr, timeArrCVX, c='red', label='CVXOPT')
+    axis[1].plot(numImpsArr, timeArrAlg1, c='green', label='Algorithm 1')
+    axis[1].plot(numImpsArr, timeArrAlg2, c='blue', label='Algorithm 2')
 
     # Labels
     axis[0].set_xlabel('Number of Impressions')
