@@ -17,12 +17,12 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     # Make models
     for i in range(len(objArr)):
         #change indexing when using CVXOPT
-        # objArrCVX.append(objArr[i][0])
-        objArrAlg1.append(objArr[i][0])
-        objArrAlg2.append(objArr[i][1])
-        # timeArrCVX.append(timeArr[i][0])
-        timeArrAlg1.append(timeArr[i][0])
-        timeArrAlg2.append(timeArr[i][1])
+        objArrCVX.append(objArr[i][0])
+        objArrAlg1.append(objArr[i][1])
+        objArrAlg2.append(objArr[i][2])
+        timeArrCVX.append(timeArr[i][0])
+        timeArrAlg1.append(timeArr[i][1])
+        timeArrAlg2.append(timeArr[i][2])
  
     # objModelCVX = np.poly1d(np.polyfit(numImpsArr, objArrCVX, 3))
     objModelAlg1= np.poly1d(np.polyfit(numImpsArr, objArrAlg1, 3))
@@ -40,12 +40,12 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     # axis[1].scatter(numImpsArr, timeArrAlg1, c='green', label='Algorithm 1')
     # axis[1].scatter(numImpsArr, timeArrAlg2, c='blue',label='Algorithm 2')
 
-    # axis[0].plot(numImpsArr, objModelCVX(numImpsArr), color='red')
-    axis[0].plot(numImpsArr, objArrAlg1, color='green')
-    axis[0].plot(numImpsArr, objArrAlg2, color='blue')
-    # axis[1].plot(numImpsArr, timeModelCVX(numImpsArr), color='red')
-    axis[1].plot(numImpsArr, timeArrAlg1, color='green')
-    axis[1].plot(numImpsArr, timeArrAlg2, color='blue')
+    axis[0].plot(numImpsArr, objArrCVX, color='red', label='CVXOPT')
+    axis[0].plot(numImpsArr, objArrAlg1, color='green', label='Algorithm 1')
+    axis[0].plot(numImpsArr, objArrAlg2, color='blue', label='Algorithm 2')
+    axis[1].plot(numImpsArr, timeArrCVX, color='red', label='CVXOPT')
+    axis[1].plot(numImpsArr, timeArrAlg1, color='green', label='Algorithm 1')
+    axis[1].plot(numImpsArr, timeArrAlg2, color='blue', label='Algorithm 2')
 
     # Labels
     axis[0].set_xlabel('Number of Impressions')
@@ -57,10 +57,40 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     plt.tight_layout()
     # Save and Clear
 
-    plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImps.png')
+    plt.savefig('/Users/lindsayk/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImps.png')
     plt.cla()
     plt.clf()
     plt.close()
+
+
+def graphDifference(objArr, timeArr, numImpsArr):
+    figure, axis = plt.subplots(1, 2)
+    objValDif, timeDif = [], []
+    # Make models
+    for i in range(len(objArr)):
+        objValDif.append(objArr[i][1] - objArr[i][0]) #will be the second alg passed minus the first
+        timeDif.append(timeArr[i][1] - timeArr[i][0])
+
+    axis[0].plot(numImpsArr, objValDif, color='blue', label='CVXOpt - Alg1')
+    # axis[1].plot(numImpsArr, timeModelCVX(numImpsArr), color='red')
+    axis[1].plot(numImpsArr, timeDif, color='blue', label='CVXOpt - Alg1')
+
+    axis[0].set_xlabel('Number of Impressions')
+    axis[0].set_ylabel('Difference in Objective Value')
+    axis[1].set_xlabel('Number of Impressions')
+    axis[1].set_ylabel('Difference in Time Taken')
+    axis[0].legend()
+    axis[1].legend()
+    plt.tight_layout()
+    # Save and Clear
+
+    plt.savefig('/Users/lindsayk/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImpsDif.png')
+    plt.cla()
+    plt.clf()
+    plt.close()
+
+
+
 
 def graph(x, y, xlabel, ylabel):
     #do r2 stuff
