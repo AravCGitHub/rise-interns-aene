@@ -46,20 +46,15 @@ def createVectorB(advs, imps):
     vectorB = budgetsList + impressionsList + advertisersList
     return vectorB
 
-def createVectorC(advs, imps):
-    vectorC = []
-    for a in advs:
-        for i in imps:
-            vectorC.append(-1*a.returnValuation()[i.returnType()])
-    return vectorC
 
-def lpSolve(advs, imps):
+def lpSolve(advs, imps, weights):
+    weights = [-w for w in weights]
     npMatrixA = np.array(createMatrixA(advs,imps))
     npMatrixA.transpose()
     A = matrix(npMatrixA)
     npVectorB = createVectorB(advs,imps)
     B = matrix(npVectorB, (npMatrixA.shape[0], 1), 'd')
-    C = matrix(createVectorC(advs, imps))
+    C = matrix(weights)
     startTime = time.time()
     sol = solvers.lp(C, A, B)
     endTime = time.time()

@@ -9,29 +9,43 @@ import matplotlib.pyplot as plt
 from advertiser import Advertiser
 from impression import Impression
 import seaborn as sns
+import oldAlg1
 
 def frange(start, stop, step):
     while start < stop:
         yield start
         start += step
 
-def createSyntheticInstance(numAdvs, numImps, seed = None):
+def createSyntheticInstance(numAdvs, numImps, seed = None, corruptNum = 0):
     if seed is not None:
         random.seed(seed)
     numTypes = 10
     advsList = []
     for i in range(numAdvs):
-        advsList.append(Advertiser(numTypes, False))
+        advsList.append(Advertiser(numTypes, corruptNum))
     impsList = []
     for i in range(numImps):
         type = random.randint(0, numTypes-1)
         impsList.append(Impression(type))
-    return advsList, impsList
+
+    weights = []
+    for a in advsList:
+        for i in impsList:
+            weights.append(a.returnValuation()[i.returnType()])
+
+    budgets = []
+    for a in advsList:
+        budgets.append(a.budget)
+
+    return advsList, impsList, weights, budgets
+
 
 def objectiveValue(solved, weights):
     npSolv = np.array(solved).ravel()
-    dot = np.dot(npSolv * -1, weights)
+    dot = np.dot(npSolv, weights)
     return dot
+
+
 
 def main():
     figure, axis = plt.subplots(1, 2)
@@ -39,40 +53,58 @@ def main():
     optSolvedArr, alg1solvedArr, alg2solvedArr = [], [], []
     optTimeArr, alg1TimeArr, alg2TimeArr = [], [], []
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
+    Oalg1solvedArr, Oalg1TimeArr, Oalg1ObjArr = [], [], []
     numImpsArr = []
-    for count in range(100):
-        numImps = count * 10
-        a, i = createSyntheticInstance(50, numImps) # fixed 10 advs, rand 1-100 imps
-        weights = optimal.createVectorC(a,i)
+    count = 0
+    for loop in range(10):
+        print(loop)
+        count += 10
+        a, i, w, b = createSyntheticInstance(30, count) # fixed 10 advs, rand 1-100 imps
         # Optimal Algorithm
-        # optSolved, optTimeTaken = (optimal.lpSolve(a,i))
-        # optObj = objectiveValue(optSolved, weights)
-        # optSolvedArr.append(optSolved)
-        # optTimeArr.append(optTimeTaken)
-        # optObjArr.append(optObj)
-        # print("CVXOPT Objective Value:", optObj)
-        # print("Time Taken:", optTimeTaken)
+        if count <= 100:
+            optSolved, optTimeTaken = (optimal.lpSolve(a,i, w))
+            print(optSolved)
+            optObj = objectiveValue(optSolved, w)
+            optSolvedArr.append(optSolved)
+            optTimeArr.append(optTimeTaken)
+            optObjArr.append(optObj)
+            print("CVXOPT Objective Value:", optObj)
+            print("Time Taken:", optTimeTaken)
+        else:
+            optTimeArr.append(0)
+            optObjArr.append(0)
         # Algorithm 1
-        alg1Solved, alg1TimeTaken = alg1.solve(a,i,1)
-        alg1Obj = objectiveValue(alg1Solved, weights)
+        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,b,1)
+        alg1Obj = objectiveValue(alg1Solved, w)
         alg1solvedArr.append(alg1Solved)
         alg1TimeArr.append(alg1TimeTaken)
         alg1ObjArr.append(alg1Obj)
         print("Alg1 Objective Value:", alg1Obj)
-        print("Time Taken:", alg1TimeTaken)
+        # print("Time Taken:", alg1TimeTaken)
+        # Old Algorithm 1
+        Oalg1Solved, Oalg1TimeTaken = oldAlg1.solve(a,i,1)
+        Oalg1Obj = objectiveValue(Oalg1Solved, w)
+        Oalg1solvedArr.append(Oalg1Solved)
+        Oalg1TimeArr.append(Oalg1TimeTaken)
+        Oalg1ObjArr.append(Oalg1Obj)
+        print("OldAlg1 Objective Value:", Oalg1Obj)
+
+
+
+
         # Algorithm 2
-        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
-        alg2Obj = objectiveValue(alg2Solved, weights)
-        alg2solvedArr.append(alg2Solved)
-        alg2TimeArr.append(alg2TimeTaken)
-        alg2ObjArr.append(alg2Obj)
-        print("Alg2 Objective Value:", alg2Obj)
-        print("Time Taken:", alg2TimeTaken)
+        # alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,w,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
+        # alg2Obj = objectiveValue(alg2Solved, w)
+        # alg2solvedArr.append(alg2Solved)
+        # alg2TimeArr.append(alg2TimeTaken)
+        # alg2ObjArr.append(alg2Obj)
+        # print("Alg2 Objective Value:", alg2Obj)
+        # print("Time Taken:", alg2TimeTaken)
         # Graphing
-        objArr = [alg1ObjArr[count], alg2ObjArr[count]]
-        timeArr = [alg1TimeArr[count], alg2TimeArr[count]]
-        impsObjVal[numImps] = objArr
-        impsTime[numImps] = timeArr
+        objArr = [optObjArr[loop], alg1ObjArr[loop], Oalg1ObjArr[loop]]
+        timeArr = [optTimeArr[loop],alg1TimeArr[loop], Oalg1TimeArr[loop]]
+        impsObjVal[count] = objArr
+        impsTime[count] = timeArr
     numImpsArr = list(impsObjVal.keys())
     numImpsArr.sort()
     sortedImpsObjVal = [impsObjVal[i] for i in numImpsArr]
@@ -158,6 +190,8 @@ def tuneEpsLam():
 main()
 # test()
 # tuneEpsLam() # lam = 0.25, eps = 0.435
+# t3()
+    
 
 # make heat map for eps vs lam testing - pick 5 synthetic instances of same size and find avg of obj on each
 # sort dictionary and implement best fit lines
