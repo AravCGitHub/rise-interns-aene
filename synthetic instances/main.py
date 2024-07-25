@@ -5,11 +5,11 @@ import graph
 import optimal
 import alg1
 import alg2
+import oldAlg2
 import matplotlib.pyplot as plt
 from advertiser import Advertiser
 from impression import Impression
 import seaborn as sns
-import brokenAlg1
 import data
 
 def frange(start, stop, step):
@@ -51,15 +51,16 @@ def main():
     optSolvedArr, alg1solvedArr, alg2solvedArr = [], [], []
     optTimeArr, alg1TimeArr, alg2TimeArr = [], [], []
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
-    Oalg1solvedArr, Oalg1TimeArr, Oalg1ObjArr = [], [], []
     numImpsArr = []
     count = 0
     for loop in range(10):
         print(loop)
         count += 10
-        a, i, w = createSyntheticInstance(10, count)
+        # a, i, w = createSyntheticInstance(10, count, corruptNum=3)
+        numA, numI, w = bigData()
+        a, i, _ = createSyntheticInstance(numA, numI, corruptNum=3)
         # Optimal Algorithm
-        if count <= 10:
+        if count <= -1:
             optSolved, optTimeTaken = (optimal.lpSolve(a,i,w))
             optObj = objectiveValue(optSolved, w)
             optSolvedArr.append(optSolved)
@@ -87,60 +88,15 @@ def main():
         print("Alg2 Objective Value:", alg2Obj)
         print("Time Taken:", alg2TimeTaken)
         # Graphing
-    #     objArr = [optObjArr[loop], alg1ObjArr[loop], Oalg1ObjArr[loop]]
-    #     timeArr = [optTimeArr[loop],alg1TimeArr[loop], Oalg1TimeArr[loop]]
-    #     impsObjVal[count] = objArr
-    #     impsTime[count] = timeArr
-    # numImpsArr = list(impsObjVal.keys())
-    # numImpsArr.sort()
-    # sortedImpsObjVal = [impsObjVal[i] for i in numImpsArr]
-    # sortedImpsTime = [impsTime[i] for i in numImpsArr]
-    # graph.graphObjandTimeVsImps(sortedImpsObjVal, sortedImpsTime, numImpsArr)
-
-def test():
-    a, i = createSyntheticInstance(50,1000,1)
-    weights = optimal.createVectorC(a,i)
-    roundsArr, epsArr, lamArr, maxOverflowArr, timeArr, objArr = [], [], [], [], [], [] 
-
-    for rounds in range (1,100):
-        print("Rounds:", rounds)
-        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,0.25,0.21,rounds)
-        alg2Obj = objectiveValue(alg2Solved, weights)
-        roundsArr.append(rounds)
-        maxOverflowArr.append(maxOverflow)
-        timeArr.append(alg2TimeTaken)
-        objArr.append(alg2Obj)
-    graph.graph(roundsArr, maxOverflowArr, "Rounds", "MaximumBudgetOverflow")
-    graph.graph(roundsArr, timeArr, "Rounds", "TimeTaken")
-    graph.graph(roundsArr, objArr, "Rounds", "ObjectiveValue")
-
-    # roundsArr, epsArr, lamArr, maxOverflowArr, timeArr, objArr = [], [], [], [], [], [] 
-
-    # for eps in frange(0.01,1.0,0.025):
-    #     print("Epsilon:", eps)
-    #     alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,0.5,eps,20)
-    #     alg2Obj = objectiveValue(alg2Solved, weights)
-    #     epsArr.append(eps)
-    #     maxOverflowArr.append(maxOverflow)
-    #     timeArr.append(alg2TimeTaken)
-    #     objArr.append(alg2Obj)
-    # graph.graph(epsArr, maxOverflowArr, "Epsilon", "MaximumBudgetOverflow")
-    # graph.graph(epsArr, timeArr, "Epsilon", "TimeTaken")
-    # graph.graph(epsArr, objArr, "Epsilon", "ObjectiveValue")
-
-    # roundsArr, epsArr, lamArr, maxOverflowArr, timeArr, objArr = [], [], [], [], [], []
-
-    # for lam in frange(0.05,1.0,0.025):
-    #     print("Lambda:", lam)
-    #     alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,weights,lam,0.9,20)
-    #     alg2Obj = objectiveValue(alg2Solved, weights)
-    #     lamArr.append(lam)
-    #     maxOverflowArr.append(maxOverflow)
-    #     timeArr.append(alg2TimeTaken)
-    #     objArr.append(alg2Obj)
-    # graph.graph(lamArr, maxOverflowArr, "Lambda", "MaximumBudgetOverflow")
-    # graph.graph(lamArr, timeArr, "Lambda", "TimeTaken")
-    # graph.graph(lamArr, objArr, "Lambda", "ObjectiveValue")
+        objArr = [optObjArr[loop], alg1ObjArr[loop], alg2ObjArr[loop]]
+        timeArr = [optTimeArr[loop],alg1TimeArr[loop], alg2TimeArr[loop]]
+        impsObjVal[count] = objArr
+        impsTime[count] = timeArr
+    numImpsArr = list(impsObjVal.keys())
+    numImpsArr.sort()
+    sortedImpsObjVal = [impsObjVal[i] for i in numImpsArr]
+    sortedImpsTime = [impsTime[i] for i in numImpsArr]
+    graph.graphObjandTimeVsImps(sortedImpsObjVal, sortedImpsTime, numImpsArr)
 
 def tuneEpsLam():
     aArr, iArr, weightsArr = [], [], []
@@ -173,13 +129,13 @@ def tuneEpsLam():
     plt.title('Objective Value Heatmap')
     plt.show()
 
-def testSnap():
+def bigData():
     dataset = data.read_data()
-    df, advNum, impNum = data.dataToDF(dataset, advNum=100)
-    weights = data.createWeightMatrix(df, advNum, impNum)
+    df, advNum, maxImpId = data.dataToDF(dataset, advNum=1000)
+    weights, impNum = data.createWeightMatrix(df, advNum, maxImpId)
+    print(impNum)
+    return advNum, impNum, weights
 
-
-# testSnap()
 main()
 # test()
 # tuneEpsLam() # lam = 0.25, eps = 0.435
