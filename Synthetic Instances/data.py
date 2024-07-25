@@ -4,18 +4,16 @@ import advertiser
 import impression
 
 #reading the data
-def read_data(file_path = '/Users/aravchadha/Documents/GitHub/rise-interns-aene/Synthetic Instances/data.txt', lines = 728):
+def read_data(file_path = '/Users/lindsayk/Documents/GitHub/rise-interns-aene/Synthetic Instances/data.txt'):
     data = []
     file = open(file_path, 'r', encoding='utf-8')
     for line in file:
         data.append(line.strip().split('\t'))
-    for i in range(9):
-        data.pop(0)
-    data = data[0:lines]
+
     return data
 
 #converting data into dataframe
-def dataToDF(data, advNum=15):
+def dataToDF(data, advNum):
     advs = []
     imps = []
     weights = []
@@ -32,38 +30,45 @@ def dataToDF(data, advNum=15):
 
         if advCount >= advNum:
             break
+
+    
+    # file = open("demofile3.txt", "r")
+    # print(file.read())
+
     #drop duplicates
     df = pd.DataFrame({'Advertiser': advs, 'Impression': imps, 'Weight': weights}, index=(a for a in range(len(advs))))
     mask = df['Impression'].isin(df['Advertiser'])
     df_filtered = df[~mask]
 
     #find n dim of xmatrix
-
     return df_filtered, advNum, int(df['Impression'].max())
+
+
+
 
 #creating the matrix
 def createWeightMatrix(df, advNum, maxImpId):
-    tempN = 10000
+    tempN = 1000000
     weightMatrix = np.zeros((advNum, tempN))
-    
-    currAdv = 0
+    currAdv = df['Advertiser'][1]
     count = 0
     for index, row in df.iterrows():
         if currAdv != row['Advertiser']:
             currAdv = row['Advertiser']
             count += 1
         weightMatrix[count][int(row['Impression'])] = row['Weight']
-    
+
+    # for x in weightMatrix[0]:
+    #     print(x)
+
+
     droppedColumns = [] 
     for i in range(len(weightMatrix[0])):
         if np.array_equal(weightMatrix[:,i], np.zeros(advNum)):
             droppedColumns.append(i)
 
     weightMatrix = np.delete(weightMatrix, droppedColumns, axis=1)
+    # print(weightMatrix)
     impNum = weightMatrix.shape[1]
     return weightMatrix.ravel().tolist(), impNum
-
-
-
-
 
