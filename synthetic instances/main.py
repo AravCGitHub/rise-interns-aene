@@ -10,6 +10,7 @@ from advertiser import Advertiser
 from impression import Impression
 import seaborn as sns
 import brokenAlg1
+import data
 
 def frange(start, stop, step):
     while start < stop:
@@ -187,7 +188,14 @@ def tuneEpsLam():
     plt.title('Objective Value Heatmap')
     plt.show()
 
-main()
+def testSnap():
+    dataset = data.read_data()
+    df, advNum, impNum = data.dataToDF(dataset, advNum=100)
+    weights = data.createWeightMatrix(df, advNum, impNum)
+
+
+testSnap()
+# main()
 # test()
 # tuneEpsLam() # lam = 0.25, eps = 0.435
 # t3()
