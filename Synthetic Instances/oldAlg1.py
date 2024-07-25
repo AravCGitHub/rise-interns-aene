@@ -4,20 +4,11 @@ import numpy as np
 def removeImpressionWithLowestVal(imps): # helper for algorithm
     for imp in imps:
         val = imp.valWithCurrAdv
-        if val == np.min(np.array(i.valWithCurrAdv for i in imps)):
+        if val == np.min(np.array(imp.valWithCurrAdv)):
             imps.remove(imp)
+            # if val != 0:
+                # print("REMOVED", val)
             break
-
-def updateBeta(a_exp, alpha): # helper for algorithm
-    # Calculate left fraction
-    e_B_a = (1+1/a_exp.budget) ** a_exp.budget
-    left = (e_B_a ** (alpha / a_exp.budget) - 1) / (e_B_a ** alpha - 1)
-    # Calculate right summation
-    sum = 0
-    for i in range(len(a_exp.impressions)):
-        sum += a_exp.impressions[i].valWithCurrAdv * e_B_a ** ((alpha * (a_exp.budget - i)) / a_exp.budget)
-    # Return product of left and right
-    return left * sum
 
 def updateBeta(a_exp, alpha): # helper for algorithm
     # Calculate left fraction
@@ -49,11 +40,19 @@ def solve(advs, imps, alpha):
         a_exp.impressions.append(imp)
         removeImpressionWithLowestVal(a_exp.impressions)
         a_exp.beta = updateBeta(a_exp, alpha)
+        # a_exp.beta = 1
     endTime = time.time()
     # Printing results
     solve = np.zeros((len(advs),len(imps)))
+    # objectiveValue = 0
     for a in range(len(advs)):
+        tot = 0
         for imp in advs[a].impressions:
             if imp.valWithCurrAdv != 0:
+                # objectiveValue += imp.valWithCurrAdv
+                tot += 1
                 solve[a][imp.number] = 1
+        if tot > advs[a].budget:
+            raise Exception("ERROR: Budget exceeded at advertiser", a)
+
     return solve.ravel(), endTime - startTime

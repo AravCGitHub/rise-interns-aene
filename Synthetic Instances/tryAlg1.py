@@ -13,7 +13,6 @@ def updateBeta(alpha, index, weights, budget, numImps): # helper for algorithm
    # Return product of left and right
    return left * right
 
-
 def solve(advs, imps, weights, budgets, alpha):
    weights = [-w for w in weights]
    startTime = time.time()
@@ -33,12 +32,10 @@ def solve(advs, imps, weights, budgets, alpha):
        miniXMatrix = xMatrix[index*len(imps):index*len(imps)+len(imps)]
        allocatedImps = np.sum(miniXMatrix)
 
-
        print("impNum:", i, " advNum", index)
        print("mini xMatrix", xMatrix[index*len(imps):index*len(imps)+len(imps)])
        print("full xMatrix", xMatrix)
        print("allocatedNum", allocatedImps, " BudgetNum", budgets[index], "\n")
-
 
        if allocatedImps > budgets[index]:
            min = sys.float_info.max
@@ -50,8 +47,7 @@ def solve(advs, imps, weights, budgets, alpha):
            minIndex += index*len(imps)
            xMatrix[minIndex] = 0
            print(minIndex)
-
-
+           
        betaArr[index] = updateBeta(alpha, index, weights, budgets[index], len(imps))
    endTime = time.time()
    return xMatrix.ravel(), endTime - startTime

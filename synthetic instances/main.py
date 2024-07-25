@@ -38,15 +38,12 @@ def createSyntheticInstance(numAdvs, numImps, seed = None, corruptNum = 0):
     for a in advsList:
         budgets.append(a.budget)
 
-    return advsList, impsList, weights, budgets
-
+    return advsList, impsList, weights
 
 def objectiveValue(solved, weights):
     npSolv = np.array(solved).ravel()
     dot = np.dot(npSolv, weights)
     return dot
-
-
 
 def main():
     figure, axis = plt.subplots(1, 2)
@@ -60,11 +57,10 @@ def main():
     for loop in range(10):
         print(loop)
         count += 10
-        a, i, w, b = createSyntheticInstance(30, count) # fixed 10 advs, rand 1-100 imps
+        a, i, w = createSyntheticInstance(10, count)
         # Optimal Algorithm
-        if count <= 100:
-            optSolved, optTimeTaken = (optimal.lpSolve(a,i, w))
-            print(optSolved)
+        if count <= 10:
+            optSolved, optTimeTaken = (optimal.lpSolve(a,i,w))
             optObj = objectiveValue(optSolved, w)
             optSolvedArr.append(optSolved)
             optTimeArr.append(optTimeTaken)
@@ -75,45 +71,34 @@ def main():
             optTimeArr.append(0)
             optObjArr.append(0)
         # Algorithm 1
-        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,b,1)
+        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,1,1)
         alg1Obj = objectiveValue(alg1Solved, w)
         alg1solvedArr.append(alg1Solved)
         alg1TimeArr.append(alg1TimeTaken)
         alg1ObjArr.append(alg1Obj)
         print("Alg1 Objective Value:", alg1Obj)
-        # print("Time Taken:", alg1TimeTaken)
-        # Old Algorithm 1
-        Oalg1Solved, Oalg1TimeTaken = oldAlg1.solve(a,i,1)
-        Oalg1Obj = objectiveValue(Oalg1Solved, w)
-        Oalg1solvedArr.append(Oalg1Solved)
-        Oalg1TimeArr.append(Oalg1TimeTaken)
-        Oalg1ObjArr.append(Oalg1Obj)
-        print("OldAlg1 Objective Value:", Oalg1Obj)
-
-
-
-
+        print("Time Taken:", alg1TimeTaken)
         # Algorithm 2
-        # alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,w,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
-        # alg2Obj = objectiveValue(alg2Solved, w)
-        # alg2solvedArr.append(alg2Solved)
-        # alg2TimeArr.append(alg2TimeTaken)
-        # alg2ObjArr.append(alg2Obj)
-        # print("Alg2 Objective Value:", alg2Obj)
-        # print("Time Taken:", alg2TimeTaken)
+        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,w,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
+        alg2Obj = objectiveValue(alg2Solved, w)
+        alg2solvedArr.append(alg2Solved)
+        alg2TimeArr.append(alg2TimeTaken)
+        alg2ObjArr.append(alg2Obj)
+        print("Alg2 Objective Value:", alg2Obj)
+        print("Time Taken:", alg2TimeTaken)
         # Graphing
-        objArr = [optObjArr[loop], alg1ObjArr[loop], Oalg1ObjArr[loop]]
-        timeArr = [optTimeArr[loop],alg1TimeArr[loop], Oalg1TimeArr[loop]]
-        impsObjVal[count] = objArr
-        impsTime[count] = timeArr
-    numImpsArr = list(impsObjVal.keys())
-    numImpsArr.sort()
-    sortedImpsObjVal = [impsObjVal[i] for i in numImpsArr]
-    sortedImpsTime = [impsTime[i] for i in numImpsArr]
-    graph.graphObjandTimeVsImps(sortedImpsObjVal, sortedImpsTime, numImpsArr)
+    #     objArr = [optObjArr[loop], alg1ObjArr[loop], Oalg1ObjArr[loop]]
+    #     timeArr = [optTimeArr[loop],alg1TimeArr[loop], Oalg1TimeArr[loop]]
+    #     impsObjVal[count] = objArr
+    #     impsTime[count] = timeArr
+    # numImpsArr = list(impsObjVal.keys())
+    # numImpsArr.sort()
+    # sortedImpsObjVal = [impsObjVal[i] for i in numImpsArr]
+    # sortedImpsTime = [impsTime[i] for i in numImpsArr]
+    # graph.graphObjandTimeVsImps(sortedImpsObjVal, sortedImpsTime, numImpsArr)
 
 def test():
-    a, i = createSyntheticInstance(50,1000, 1)
+    a, i = createSyntheticInstance(50,1000,1)
     weights = optimal.createVectorC(a,i)
     roundsArr, epsArr, lamArr, maxOverflowArr, timeArr, objArr = [], [], [], [], [], [] 
 
@@ -194,8 +179,8 @@ def testSnap():
     weights = data.createWeightMatrix(df, advNum, impNum)
 
 
-testSnap()
-# main()
+# testSnap()
+main()
 # test()
 # tuneEpsLam() # lam = 0.25, eps = 0.435
 # t3()

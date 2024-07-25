@@ -1,4 +1,5 @@
 import random
+from sortedcontainers import SortedList
 from impression import Impression
 import math
 import sys
@@ -6,10 +7,9 @@ import sys
 class Advertiser:
     
     def __init__(self, numTypes, corruptNum):
-        self.budget = random.randint(1, 100)
+        self.budget = random.randint(1, 20)
         self.valuations = []
-        self.impressions = [Impression(0)] * self.budget
-        self.beta = 0
+        self.impressions = SortedList(key=Impression.weight_key) # for alg1
         if corruptNum == 1:
             self.corruption1(numTypes)
         elif corruptNum == 2:
@@ -58,7 +58,7 @@ class Advertiser:
     def __str__(self):
         # return "Budget: " + str(self.budget)
         return "vals " + str(self.valuations)
-    
+
     def __repr__(self):
         return "vals " + str(self.valuations)
     

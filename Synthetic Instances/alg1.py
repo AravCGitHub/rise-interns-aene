@@ -1,50 +1,66 @@
 import time
+import advertiser
 import numpy as np
 
-def removeImpressionWithLowestVal(imps): # helper for algorithm
-    for imp in imps:
-        val = imp.valWithCurrAdv
-        if val == np.min(np.array(imp.valWithCurrAdv)):
-            imps.remove(imp)
-            break
-
-def updateBeta(a_exp, alpha): # helper for algorithm
-    # Calculate left fraction
-    e_B_a = (1+1/a_exp.budget) ** a_exp.budget
-    left = (e_B_a ** (alpha / a_exp.budget) - 1) / (e_B_a ** alpha - 1)
-    # Calculate right summation
-    valuationArr = np.array([imp.valWithCurrAdv for imp in a_exp.impressions])
-    constArr = np.array([e_B_a ** ((alpha * (a_exp.budget - 1)) / a_exp.budget)] * len(valuationArr))
-    right = np.dot(valuationArr, constArr)
-    # Return product of left and right
+def updateBeta1(adv, alpha):
+    B = adv.budget
+    e = (1+1/B) ** B
+    left = (e ** (alpha / B) - 1) / (e ** alpha - 1)
+    right = 0
+    for i in range(len(adv.impressions)):
+        right += (adv.impressions[i].weight) * (e ** ((alpha * (B - i)) / B))
     return left * right
 
-def solve(advs, imps, alpha):
-    # B = np.min([adv.budget for adv in advs])
-    # e_B = (1+1/B) ** B
-    # alpha_B = B * (e_B ** (alpha/B) - 1)
+def updateBeta2(adv, alpha):
+    return 0 # TODO exponential average of weights
+
+def updateBeta3(adv, alpha):
+    return 0 # TODO lowest weight
+
+def solve(advs, imps, weights, alpha, betaUpdateType):
+    # Initialize variables
+    dummy = advertiser.Advertiser(0, 0) # dummy advertiser for impressions that don't get allocated
+    betaArr = np.array([0]*len(advs))
+    weights = np.array(weights).reshape((len(advs), len(imps)))
+    objVal = 0
     startTime = time.time()
+    # Loop through all impressions
     for i in range(len(imps)):
-        imp = imps[i] # in case we need to track imp #
-        type = imp.returnType()
-        npWMT = [] # weight minus threshold list
-        for adv in advs:
-            val = adv.valuations[type]
-            beta = adv.returnBeta()
-            npWMT.append(val - beta)
-        a_exp = advs[np.argmax(npWMT)] # find advertiser with highest weight minus threshold
-        imp.valWithCurrAdv = a_exp.returnValuation()[type]
-        imp.number = i
-        a_exp.impressions.append(imp)
-        removeImpressionWithLowestVal(a_exp.impressions)
-        a_exp.beta = updateBeta(a_exp, alpha)
+        t = imps[i]
+        t.number = i
+        # Find best advertiser for impression
+        advIndex = np.argmax(weights[:,i] - betaArr)
+        discGain = weights[advIndex][i] - betaArr[advIndex]
+        # If discGain small, don't allocate
+        if discGain <= 0:
+            t.weight = 0
+            dummy.impressions.add(t)
+            continue
+        # Otherwise, allocate impression to advertiser
+        else:
+            t.weight = weights[advIndex][i]
+            advs[advIndex].impressions.add(t)
+        objVal += t.weight
+        # Remove lowest value impression if budget exceeded
+        if len(advs[advIndex].impressions) > advs[advIndex].budget:
+            minImp = advs[advIndex].impressions.pop(0)
+            dummy.impressions.add(minImp)
+            objVal -= minImp.weight
+        # Update beta value for advertiser
+        if betaUpdateType == 1:
+            betaArr[advIndex] = updateBeta1(advs[advIndex], alpha)
+        elif betaUpdateType == 2:
+            betaArr[advIndex] = updateBeta2(advs[advIndex], alpha)
+        elif betaUpdateType == 3:
+            betaArr[advIndex] = updateBeta3(advs[advIndex], alpha)
     endTime = time.time()
-    # Printing results
-    solve = np.zeros((len(advs),len(imps)))
-    # objectiveValue = 0
+    for a in range(len(advs)):
+        if len(advs[a].impressions) > advs[a].budget:
+            raise Exception("ERROR: Budget exceeded at advertiser", a)
+    # Create xMatrix
+    xMatrix = np.zeros((len(advs), len(imps)))
     for a in range(len(advs)):
         for imp in advs[a].impressions:
-            if imp.valWithCurrAdv != 0:
-                # objectiveValue += imp.valWithCurrAdv
-                solve[a][imp.number] = 1
-    return solve.ravel(), endTime - startTime
+            xMatrix[a][imp.number] = 1
+    # Return results
+    return xMatrix.ravel(), endTime - startTime

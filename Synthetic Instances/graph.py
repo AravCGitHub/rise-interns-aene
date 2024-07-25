@@ -25,12 +25,12 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
         timeArrAlg2.append(timeArr[i][2])
  
     # objModelCVX = np.poly1d(np.polyfit(numImpsArr, objArrCVX, 3))
-    objModelAlg1= np.poly1d(np.polyfit(numImpsArr, objArrAlg1, 3))
-    objModelAlg2 = np.poly1d(np.polyfit(numImpsArr, objArrAlg2, 3))
+    # objModelAlg1= np.poly1d(np.polyfit(numImpsArr, objArrAlg1, 3))
+    # objModelAlg2 = np.poly1d(np.polyfit(numImpsArr, objArrAlg2, 3))
 
     # timeModelCVX = np.poly1d(np.polyfit(numImpsArr, timeArrCVX, 2))
-    timeModelAlg1 = np.poly1d(np.polyfit(numImpsArr, timeArrAlg1, 2))
-    timeModelAlg2 = np.poly1d(np.polyfit(numImpsArr, timeArrAlg2, 2))
+    # timeModelAlg1 = np.poly1d(np.polyfit(numImpsArr, timeArrAlg1, 2))
+    # timeModelAlg2 = np.poly1d(np.polyfit(numImpsArr, timeArrAlg2, 2))
 
     # Plot Data
     # axis[0].scatter(numImpsArr, objArrCVX, c='red', label='CVXOPT')
@@ -57,7 +57,7 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     plt.tight_layout()
     # Save and Clear
 
-    plt.savefig('/Users/lindsayk/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImps.png')
+    plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImps.png')
     plt.cla()
     plt.clf()
     plt.close()
@@ -84,7 +84,7 @@ def graphDifference(objArr, timeArr, numImpsArr):
     plt.tight_layout()
     # Save and Clear
 
-    plt.savefig('/Users/lindsayk/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImpsDif.png')
+    plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImpsDif.png')
     plt.cla()
     plt.clf()
     plt.close()
