@@ -2,7 +2,7 @@ import time
 import advertiser
 import numpy as np
 
-def updateBeta1(adv, alpha):
+def updateBeta1(adv, alpha): # Paper's conservative method
     B = adv.budget
     e = (1+1/B) ** B
     left = (e ** (alpha / B) - 1) / (e ** alpha - 1)
@@ -11,11 +11,11 @@ def updateBeta1(adv, alpha):
         right += (adv.impressions[i].weight) * (e ** ((alpha * (B - i)) / B))
     return left * right
 
-def updateBeta2(adv, alpha):
-    return 0 # TODO exponential average of weights
+def updateBeta2(adv): # Uniform average of weights
+    return sum(imp.weight for imp in adv.impressions) / len(adv.impressions)
 
-def updateBeta3(adv, alpha):
-    return 0 # TODO lowest weight
+def updateBeta3(adv): # Lowest weight
+    return adv.impressions[0].weight
 
 def solve(advs, imps, weights, alpha, betaUpdateType):
     # Initialize variables
@@ -50,9 +50,9 @@ def solve(advs, imps, weights, alpha, betaUpdateType):
         if betaUpdateType == 1:
             betaArr[advIndex] = updateBeta1(advs[advIndex], alpha)
         elif betaUpdateType == 2:
-            betaArr[advIndex] = updateBeta2(advs[advIndex], alpha)
+            betaArr[advIndex] = updateBeta2(advs[advIndex])
         elif betaUpdateType == 3:
-            betaArr[advIndex] = updateBeta3(advs[advIndex], alpha)
+            betaArr[advIndex] = updateBeta3(advs[advIndex])
     endTime = time.time()
     for a in range(len(advs)):
         if len(advs[a].impressions) > advs[a].budget:

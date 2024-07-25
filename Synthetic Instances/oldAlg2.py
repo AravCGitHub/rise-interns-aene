@@ -45,7 +45,7 @@ def solve(advs, imps, weights, lam, eps, numRounds):
             valList = []
             difList.append(xMatrix[a].sum() - advs[a].budget)
             for i in range (len(imps)):
-                valList.append(-weights[a*len(imps) + i] * xMatrix[a][i])
+                valList.append(weights[a*len(imps) + i] * xMatrix[a][i])
             while (xMatrix[a].sum() > advs[a].budget):
                 minIndex = minInd(valList)
                 dif = xMatrix[a].sum() - advs[a].budget
@@ -53,6 +53,6 @@ def solve(advs, imps, weights, lam, eps, numRounds):
                     xMatrix[a][minIndex] -= dif
                 else:
                     xMatrix[a][minIndex] = 0
-                valList[minIndex] = -weights[a*len(imps) + minIndex] * xMatrix[a][minIndex]
+                valList[minIndex] = weights[a*len(imps) + minIndex] * xMatrix[a][minIndex]
     endTime = time.time()
     return xMatrix.ravel(), endTime - startTime, max(difList) if difList else 0

@@ -34,10 +34,6 @@ def createSyntheticInstance(numAdvs, numImps, seed = None, corruptNum = 0):
         for i in impsList:
             weights.append(a.returnValuation()[i.returnType()])
 
-    budgets = []
-    for a in advsList:
-        budgets.append(a.budget)
-
     return advsList, impsList, weights
 
 def objectiveValue(solved, weights):
@@ -53,26 +49,33 @@ def main():
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
     numImpsArr = []
     count = 0
-    for loop in range(10):
+    for loop in range(50):
         print(loop)
-        count += 10
-        # a, i, w = createSyntheticInstance(10, count, corruptNum=3)
-        numA, numI, w = bigData()
-        a, i, _ = createSyntheticInstance(numA, numI, corruptNum=3)
+        count += 20
+        a, i, w = createSyntheticInstance(50, count, corruptNum=0)
+        # numA, numI, w = bigData()
+        # a, i, _ = createSyntheticInstance(numA, numI, corruptNum=3)
         # Optimal Algorithm
-        if count <= -1:
-            optSolved, optTimeTaken = (optimal.lpSolve(a,i,w))
-            optObj = objectiveValue(optSolved, w)
-            optSolvedArr.append(optSolved)
-            optTimeArr.append(optTimeTaken)
-            optObjArr.append(optObj)
-            print("CVXOPT Objective Value:", optObj)
-            print("Time Taken:", optTimeTaken)
-        else:
-            optTimeArr.append(0)
-            optObjArr.append(0)
+        # if count <= -1:
+        #     optSolved, optTimeTaken = (optimal.lpSolve(a,i,w))
+        #     optObj = objectiveValue(optSolved, w)
+        #     optSolvedArr.append(optSolved)
+        #     optTimeArr.append(optTimeTaken)
+        #     optObjArr.append(optObj)
+        #     print("CVXOPT Objective Value:", optObj)
+        #     print("Time Taken:", optTimeTaken)
+        # else:
+        #     optTimeArr.append(0)
+        #     optObjArr.append(0)
+        optSolved, optTimeTaken = alg1.solve(a,i,w,1,1)
+        optObj = objectiveValue(optSolved, w)
+        optSolvedArr.append(optSolved)
+        optTimeArr.append(optTimeTaken)
+        optObjArr.append(optObj)
+        print("CVXOPT Objective Value:", optObj)
+        print("Time Taken:", optTimeTaken)
         # Algorithm 1
-        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,1,1)
+        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,1,2)
         alg1Obj = objectiveValue(alg1Solved, w)
         alg1solvedArr.append(alg1Solved)
         alg1TimeArr.append(alg1TimeTaken)
@@ -80,7 +83,7 @@ def main():
         print("Alg1 Objective Value:", alg1Obj)
         print("Time Taken:", alg1TimeTaken)
         # Algorithm 2
-        alg2Solved, alg2TimeTaken, maxOverflow = alg2.solve(a,i,w,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
+        alg2Solved, alg2TimeTaken = alg1.solve(a,i,w,1,3) # lam = 0.25, eps = 0.21, numRounds = 50
         alg2Obj = objectiveValue(alg2Solved, w)
         alg2solvedArr.append(alg2Solved)
         alg2TimeArr.append(alg2TimeTaken)
@@ -131,7 +134,7 @@ def tuneEpsLam():
 
 def bigData():
     dataset = data.read_data()
-    df, advNum, maxImpId = data.dataToDF(dataset, advNum=1000)
+    df, advNum, maxImpId = data.dataToDF(dataset, 4)
     weights, impNum = data.createWeightMatrix(df, advNum, maxImpId)
     print(impNum)
     return advNum, impNum, weights

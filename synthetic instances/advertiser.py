@@ -7,15 +7,13 @@ import sys
 class Advertiser:
     
     def __init__(self, numTypes, corruptNum):
-        self.budget = random.randint(1, 20)
+        self.budget = random.randint(1, 100)
         self.valuations = []
         self.impressions = SortedList(key=Impression.weight_key) # for alg1
         if corruptNum == 1:
             self.corruption1(numTypes)
         elif corruptNum == 2:
             self.corruption2(numTypes)
-        elif corruptNum == 3:
-            self.corruption3(numTypes)
         else:
             self.noCorruption(numTypes)
         
@@ -26,27 +24,21 @@ class Advertiser:
 
     def corruption1(self, numTypes):
         for i in range(numTypes):
-            self.valuations.append(self.capValuation(random.expovariate(0.01)))
-
-    def corruption2(self, numTypes):
-        for i in range(numTypes):
             temp = random.expovariate(1)
             rand = random.randint(1, 100)
             if rand <= 10:
-                temp *= 10
-            elif rand <= 20:
                 temp /= 10
+            elif rand <= 20:
+                temp /= 100
             self.valuations.append(self.capValuation(temp))
 
-    def corruption3(self, numTypes):
+    def corruption2(self, numTypes):
         for i in range(numTypes):
-            rand = random.randint(1,3)
+            rand = random.randint(1,2)
             if rand == 1:
-                self.valuations.append(self.capValuation(random.expovariate(0.1)))
-            elif rand == 2:
-                self.valuations.append(self.capValuation(random.expovariate(10)))
+                self.valuations.append(0)
             else:
-                self.valuations.append(self.capValuation(random.random()*10)) 
+                self.valuations.append(random.expovariate(1)) 
 
     def capValuation(self, val):
         max = (math.log(sys.float_info.max) + 1) * 0.25
