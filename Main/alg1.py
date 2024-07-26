@@ -2,7 +2,6 @@ import time
 import numpy as np
 import sys
 from advertiser import Advertiser
-sys.path.insert(0, '/home/amninder/Desktop/Folder_2')
 
 def updateBeta1(adv, alpha): # Paper's conservative method
     B = adv.budget

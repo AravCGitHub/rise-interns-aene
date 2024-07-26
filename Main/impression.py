@@ -2,16 +2,20 @@ import random
 
 class Impression:
     
-    def __init__(self):
+    def __init__(self,type):
+        self.type = type # for creating synthetic instances
         self.displayTime = random.gauss(random.random(),1.5)
-        self.weight = 0 # for alg1
-        self.number = 0 # for alg1
+        self.weight = 0
+        self.number = 0
 
     def __str__(self):
-        return "Number: " + str(self.number) + " Weight: " + str(self.weight)
+        return "Type: " + str(self.type) + " Weight: " + str(self.weight)
     
     def __repr__(self):
-        return "Number: " + str(self.number) + " Weight: " + str(self.weight)
+        return "Type: " + str(self.type) + " Weight: " + str(self.weight)
+    
+    def returnType(self):
+        return self.type
     
     def weight_key(impression):
         return impression.weight

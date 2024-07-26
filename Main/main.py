@@ -28,7 +28,7 @@ def main():
     for loop in range(50):
         print(loop)
         count += 20
-        a, i, w = synInst.createSyntheticInstance(50, count, corruptNum=0)
+        a, i, w = synInst.createSyntheticInstance(50, count)
         # numA, numI, w = bigData()
         # a, i, _ = createSyntheticInstance(numA, numI, corruptNum=3)
         # Optimal Algorithm
