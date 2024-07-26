@@ -4,12 +4,11 @@ import advertiser
 import impression
 
 #reading the data
-def read_data(file_path = '/Users/lindsayk/Documents/GitHub/rise-interns-aene/Synthetic Instances/data.txt'):
+def read_data(file_path = '/Users/aravchadha/Documents/GitHub/rise-interns-aene/Other/data.txt'):
     data = []
     file = open(file_path, 'r', encoding='utf-8')
     for line in file:
         data.append(line.strip().split('\t'))
-
     return data
 
 #converting data into dataframe
@@ -30,8 +29,6 @@ def dataToDF(data, advNum):
 
         if advCount >= advNum:
             break
-
-    
     # file = open("demofile3.txt", "r")
     # print(file.read())
 
@@ -43,12 +40,10 @@ def dataToDF(data, advNum):
     #find n dim of xmatrix
     return df_filtered, advNum, int(df['Impression'].max())
 
-
-
-
 #creating the matrix
 def createWeightMatrix(df, advNum, maxImpId):
-    tempN = 1000000
+    # tempN = maxImpId + 1
+    tempN = 1000000 # TODO fix this using maxImpId
     weightMatrix = np.zeros((advNum, tempN))
     currAdv = df['Advertiser'][1]
     count = 0
@@ -58,17 +53,18 @@ def createWeightMatrix(df, advNum, maxImpId):
             count += 1
         weightMatrix[count][int(row['Impression'])] = row['Weight']
 
-    # for x in weightMatrix[0]:
-    #     print(x)
-
-
     droppedColumns = [] 
     for i in range(len(weightMatrix[0])):
         if np.array_equal(weightMatrix[:,i], np.zeros(advNum)):
             droppedColumns.append(i)
 
     weightMatrix = np.delete(weightMatrix, droppedColumns, axis=1)
-    # print(weightMatrix)
     impNum = weightMatrix.shape[1]
     return weightMatrix.ravel().tolist(), impNum
 
+def bigData():
+    dataset = read_data()
+    df, advNum, maxImpId = dataToDF(dataset, 4)
+    weights, impNum = createWeightMatrix(df, advNum, maxImpId)
+    print(impNum)
+    return advNum, impNum, weights

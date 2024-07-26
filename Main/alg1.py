@@ -1,6 +1,8 @@
 import time
-import Extra.advertiser as advertiser
 import numpy as np
+import sys
+from advertiser import Advertiser
+sys.path.insert(0, '/home/amninder/Desktop/Folder_2')
 
 def updateBeta1(adv, alpha): # Paper's conservative method
     B = adv.budget
@@ -19,7 +21,7 @@ def updateBeta3(adv): # Lowest weight
 
 def solve(advs, imps, weights, alpha, betaUpdateType):
     # Initialize variables
-    dummy = advertiser.Advertiser(0, 0) # dummy advertiser for impressions that don't get allocated
+    dummy = Advertiser(0) # dummy advertiser for impressions that don't get allocated
     betaArr = np.array([0]*len(advs))
     weights = np.array(weights).reshape((len(advs), len(imps)))
     objVal = 0

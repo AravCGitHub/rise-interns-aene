@@ -1,11 +1,6 @@
 import random
 import numpy as np
 from sklearn.metrics import r2_score
-import math
-import time
-import optimal
-import alg1
-import alg2
 import matplotlib.pyplot as plt
 from advertiser import Advertiser
 from impression import Impression
@@ -24,19 +19,19 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
         timeArrAlg1.append(timeArr[i][1])
         timeArrAlg2.append(timeArr[i][2])
 
-    # axis[0].plot(numImpsArr, objArrCVX, c='red', label="CVXOPT")
-    # axis[0].plot(numImpsArr, objArrAlg1, c='green', label='Algorithm 1')
-    # axis[0].plot(numImpsArr, objArrAlg2, c='blue', label='Algorithm 2')
-    # axis[1].plot(numImpsArr, timeArrCVX, c='red', label='CVXOPT')
-    # axis[1].plot(numImpsArr, timeArrAlg1, c='green', label='Algorithm 1')
-    # axis[1].plot(numImpsArr, timeArrAlg2, c='blue', label='Algorithm 2')
+    axis[0].plot(numImpsArr, objArrCVX, c='red', label="CVXOPT")
+    axis[0].plot(numImpsArr, objArrAlg1, c='green', label='Algorithm 1')
+    axis[0].plot(numImpsArr, objArrAlg2, c='blue', label='Algorithm 2')
+    axis[1].plot(numImpsArr, timeArrCVX, c='red', label='CVXOPT')
+    axis[1].plot(numImpsArr, timeArrAlg1, c='green', label='Algorithm 1')
+    axis[1].plot(numImpsArr, timeArrAlg2, c='blue', label='Algorithm 2')
 
-    axis[0].plot(numImpsArr, objArrCVX, c='red', label="Paper Method")
-    axis[0].plot(numImpsArr, objArrAlg1, c='green', label='Uniform Average')
-    axis[0].plot(numImpsArr, objArrAlg2, c='blue', label='Lowest Weight')
-    axis[1].plot(numImpsArr, timeArrCVX, c='red', label='Paper Method')
-    axis[1].plot(numImpsArr, timeArrAlg1, c='green', label='Uniform Average')
-    axis[1].plot(numImpsArr, timeArrAlg2, c='blue', label='Lowest Weight')
+    # axis[0].plot(numImpsArr, objArrCVX, c='red', label="Paper Method")
+    # axis[0].plot(numImpsArr, objArrAlg1, c='green', label='Uniform Average')
+    # axis[0].plot(numImpsArr, objArrAlg2, c='blue', label='Lowest Weight')
+    # axis[1].plot(numImpsArr, timeArrCVX, c='red', label='Paper Method')
+    # axis[1].plot(numImpsArr, timeArrAlg1, c='green', label='Uniform Average')
+    # axis[1].plot(numImpsArr, timeArrAlg2, c='blue', label='Lowest Weight')
 
     # Labels
     axis[0].set_xlabel('Number of Impressions')
@@ -47,12 +42,10 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     axis[1].legend()
     plt.tight_layout()
     # Save and Clear
-
     plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/New.png')
     plt.cla()
     plt.clf()
     plt.close()
-
 
 def graphDifference(objArr, timeArr, numImpsArr):
     figure, axis = plt.subplots(1, 2)
@@ -63,7 +56,6 @@ def graphDifference(objArr, timeArr, numImpsArr):
         timeDif.append(timeArr[i][1] - timeArr[i][0])
 
     axis[0].plot(numImpsArr, objValDif, color='blue', label='CVXOpt - Alg1')
-    # axis[1].plot(numImpsArr, timeModelCVX(numImpsArr), color='red')
     axis[1].plot(numImpsArr, timeDif, color='blue', label='CVXOpt - Alg1')
 
     axis[0].set_xlabel('Number of Impressions')
