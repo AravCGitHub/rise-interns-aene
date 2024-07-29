@@ -1,18 +1,23 @@
-import main
+import synInst
 import alg2
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+
 def frange(start, stop, step):
     while start < stop:
         yield start
         start += step
 
+def objectiveValue(solved, weights):
+    npSolv = np.array(solved).ravel()
+    dot = np.dot(npSolv, weights)
+    return dot
 
 def tuneEpsLam():
     aArr, iArr, weightsArr = [], [], []
     for c in range(5):
-        a, i, w = main.createSyntheticInstance(50,1000, c)
+        a, i, w = synInst.createSyntheticInstance(50,1000, c)
         aArr.append(a)
         iArr.append(i)
         weightsArr.append(w)
@@ -24,7 +29,7 @@ def tuneEpsLam():
             objArr = []
             for (a, i, weights) in zip(aArr, iArr, weightsArr):
                 alg2Solved, _, _ = alg2.solve(a,i,weights,lam,eps,50)
-                alg2Obj = main.objectiveValue(alg2Solved, weights)
+                alg2Obj = objectiveValue(alg2Solved, weights)
                 objArr.append(alg2Obj)
             avgObj = sum(objArr) / len(objArr)
             stdDev = np.std(objArr)

@@ -40,7 +40,7 @@ def createVectorB(advs, imps):
     vectorB = []
     budgetsList = []
     for bud in advs:
-        budgetsList.append(bud.returnBudget())
+        budgetsList.append(bud.budget)
     impressionsList = [1] * len(imps)
     advertisersList = [0] * (len(imps) * len(advs))
     vectorB = budgetsList + impressionsList + advertisersList

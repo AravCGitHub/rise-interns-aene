@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np
 import advertiser
 import impression
+from synInst import createAdvsAndImps
 
 #reading the data
-def read_data(file_path = '/Users/aravchadha/Documents/GitHub/rise-interns-aene/Other/data.txt'):
+def read_data(file_path = 'Main/data.txt'):
     data = []
     file = open(file_path, 'r', encoding='utf-8')
     for line in file:
@@ -36,15 +37,14 @@ def dataToDF(data, advNum):
     df = pd.DataFrame({'Advertiser': advs, 'Impression': imps, 'Weight': weights}, index=(a for a in range(len(advs))))
     mask = df['Impression'].isin(df['Advertiser'])
     df_filtered = df[~mask]
+    maxImpId = df_filtered['Impression'].astype(int).max() + 1
 
     #find n dim of xmatrix
-    return df_filtered, advNum, int(df['Impression'].max())
+    return df_filtered, maxImpId
 
 #creating the matrix
 def createWeightMatrix(df, advNum, maxImpId):
-    # tempN = maxImpId + 1
-    tempN = 1000000 # TODO fix this using maxImpId
-    weightMatrix = np.zeros((advNum, tempN))
+    weightMatrix = np.zeros((advNum, maxImpId))
     currAdv = df['Advertiser'][1]
     count = 0
     for index, row in df.iterrows():
@@ -62,9 +62,15 @@ def createWeightMatrix(df, advNum, maxImpId):
     impNum = weightMatrix.shape[1]
     return weightMatrix.ravel().tolist(), impNum
 
-def bigData():
+def giveWeights(weightMatrix, impsList):
+    for i in range(len(impsList)):
+        impsList[i].weight = weightMatrix[i]
+
+
+def formatBigData(advNum):
     dataset = read_data()
-    df, advNum, maxImpId = dataToDF(dataset, 4)
+    df, maxImpId = dataToDF(dataset, advNum)
     weights, impNum = createWeightMatrix(df, advNum, maxImpId)
-    print(impNum)
-    return advNum, impNum, weights
+    advsList, impsList = createAdvsAndImps(advNum, impNum)
+    giveWeights(weights, impsList)
+    return advsList, impsList, weights
