@@ -21,7 +21,7 @@ def updateBeta3(adv): # Lowest weight
 def solve(advs, imps, weights, alpha, betaUpdateType):
     # Initialize variables
     dummy = Advertiser(0) # dummy advertiser for impressions that don't get allocated
-    betaArr = np.array([0]*len(advs))
+    betaArr = np.array([0.0]*len(advs))
     weights = np.array(weights).reshape((len(advs), len(imps)))
     objVal = 0
     startTime = time.time()
@@ -63,5 +63,8 @@ def solve(advs, imps, weights, alpha, betaUpdateType):
     for a in range(len(advs)):
         for imp in advs[a].impressions:
             xMatrix[a][imp.number] = 1
+    # Clear impressions
+    for a in advs:
+        a.impressions.clear()
     # Return results
     return xMatrix.ravel(), endTime - startTime

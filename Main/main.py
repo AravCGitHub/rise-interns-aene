@@ -6,31 +6,24 @@ import impression
 import data
 import graph
 import synInst
-import tuning
 import alg1
 import alg2
 import optimal
 from tuning import objectiveValue
 
-
-
 def main():
-    print("hi")
     figure, axis = plt.subplots(1, 2)
     impsObjVal, impsTime = {}, {}
     optSolvedArr, alg1solvedArr, alg2solvedArr = [], [], []
     optTimeArr, alg1TimeArr, alg2TimeArr = [], [], []
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
     numImpsArr = []
-    count = 2
-    for loop in range(20):
+    count = 0
+    for loop in range(50):
         print(loop)
-        count += 3
-        # a, i, w = synInst.createSyntheticInstance(50, count)
-        a, i, w = data.formatBigData(count)
-
+        count += 20
+        a, i, w = synInst.createSyntheticInstance(50, count)
         # numA, numI, w = bigData()
-        # a, i, _ = createSyntheticInstance(numA, numI, corruptNum=3)
         # Optimal Algorithm
         # if count <= -1:
             # optSolved, optTimeTaken = (optimal.lpSolve(a,i,w))
@@ -43,7 +36,7 @@ def main():
         # else:
         #     optTimeArr.append(0)
         #     optObjArr.append(0)
-        optSolved, optTimeTaken = optimal.lpSolve(a,i,w)
+        optSolved, optTimeTaken = alg1.solve(a,i,w,1,1)
         optObj = objectiveValue(optSolved, w)
         optSolvedArr.append(optSolved)
         optTimeArr.append(optTimeTaken)
@@ -51,7 +44,7 @@ def main():
         print("CVXOPT Objective Value:", optObj)
         print("Time Taken:", optTimeTaken)
         # Algorithm 1
-        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,1,1)
+        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,1,2)
         alg1Obj = objectiveValue(alg1Solved, w)
         alg1solvedArr.append(alg1Solved)
         alg1TimeArr.append(alg1TimeTaken)
@@ -59,7 +52,7 @@ def main():
         print("Alg1 Objective Value:", alg1Obj)
         print("Time Taken:", alg1TimeTaken)
         # Algorithm 2
-        alg2Solved, alg2TimeTaken, _ = alg2.solve(a,i,w,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
+        alg2Solved, alg2TimeTaken = alg1.solve(a,i,w,1,3) # lam = 0.25, eps = 0.21, numRounds = 50
         alg2Obj = objectiveValue(alg2Solved, w)
         alg2solvedArr.append(alg2Solved)
         alg2TimeArr.append(alg2TimeTaken)
