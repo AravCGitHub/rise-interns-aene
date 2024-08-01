@@ -12,28 +12,38 @@ def capWeight(weight):
         else:
             return weight
 
-
-def createAdvsAndImps(numAdvs, numImps, numTypes = 10):
-    advsList = []
-    for i in range(numAdvs):
-        advsList.append(Advertiser(numTypes))
+def createImps(numImps, seed = None, numTypes = 10):
+    if seed is not None:
+        random.seed(seed)
+    else:
+        random.seed()
     impsList = []
     for i in range(numImps):
         type = random.randint(0, numTypes-1)
         impsList.append(Impression(type))
-    return advsList, impsList
+    return impsList
 
-
-def createSyntheticInstance(numAdvs, numImps, seed = None, numTypes = 10):
+def createAdvs(numAdvs, seed = None, numTypes = 10):
     if seed is not None:
         random.seed(seed)
+    else:
+        random.seed()
+    advsList = []
+    for i in range(numAdvs):
+        advsList.append(Advertiser(numTypes))
+    return advsList
 
-    advsList, impsList = createAdvsAndImps(numAdvs, numImps)
-
+def createWeights(advsList, impsList):
     weights = []
     for a in advsList:
         for i in impsList:
             weights.append(a.valuations[i.type])
+    return weights
+
+def createSyntheticInstance(numAdvs, numImps, advsSeed = None, impsSeed = None, numTypes = 10):
+    advsList = createAdvs(numAdvs, advsSeed, numTypes)
+    impsList = createImps(numImps, impsSeed, numTypes)
+    weights = createWeights(advsList, impsList)
     return advsList, impsList, weights
 
 def corruption1(weights):

@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import advertiser
 import impression
-from synInst import createAdvsAndImps
+import synInst
 
 #reading the data
 def read_data(file_path = 'Main/data.txt'):
@@ -66,11 +66,11 @@ def giveWeights(weightMatrix, impsList):
     for i in range(len(impsList)):
         impsList[i].weight = weightMatrix[i]
 
-
 def formatBigData(advNum):
     dataset = read_data()
     df, maxImpId = dataToDF(dataset, advNum)
     weights, impNum = createWeightMatrix(df, advNum, maxImpId)
-    advsList, impsList = createAdvsAndImps(advNum, impNum)
+    advsList = synInst.createAdvs(advNum)
+    impsList = synInst.createImps(impNum)
     giveWeights(weights, impsList)
     return advsList, impsList, weights
