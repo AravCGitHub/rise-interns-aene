@@ -21,10 +21,18 @@ def updateBeta2(adv): # Uniform average of weights
 def updateBeta3(adv): # Lowest weight
     return adv.impressions[0].weight
 
-def predict(predAns, imp):
+def predict1(predAns, imp):
     return np.argmax(predAns[:,imp.type])
 
-def solve(advs, imps, weights, alpha, betaUpdateType, predAns = None, usePred = False):
+def predict2(corrOptSolved, imp):
+    col = corrOptSolved[:,imp.number]
+    maxIndex = np.argmax(col)
+    if maxIndex != 0 or col[0] == 1:
+        return maxIndex
+    else:
+        return -1
+
+def solve(advs, imps, weights, alpha, betaUpdateType, corrOptSolved, predAns = None, usePred = True):
     # Initialize variables
     count = 0 # TODO
     dummy = Advertiser(0) # dummy advertiser for impressions that don't get allocated
@@ -34,7 +42,6 @@ def solve(advs, imps, weights, alpha, betaUpdateType, predAns = None, usePred = 
     B = np.min([adv.budget for adv in advs])
     e_B = (1+1/B) ** B
     alpha_B = B * (e_B ** (alpha/B) - 1)
-    print("ALPHAB", alpha_B)
     startTime = time.time()
     # Loop through all impressions
     for i in range(len(imps)):
@@ -42,9 +49,13 @@ def solve(advs, imps, weights, alpha, betaUpdateType, predAns = None, usePred = 
         t.number = i
         # Find best advertiser for impression
         advIndexEXP = np.argmax(weights[:,i] - betaArr)
-        advIndexPRD = predict(predAns, t) if usePred else 0
         discGainEXP = weights[advIndexEXP][i] - betaArr[advIndexEXP]
+        predict = predict2(corrOptSolved, imps[i])
+        advIndexPRD = predict if predict != -1 else advIndexEXP
         discGainPRD = weights[advIndexPRD][i] - betaArr[advIndexPRD]
+        # print("prd index:", advIndexPRD, "  exp index:",advIndexEXP,"   prd valuation:", advs[advIndexPRD].valuations[imps[i].type], "   exp valuation", advs[advIndexPRD].valuations[imps[i].type])
+        if advs[advIndexPRD].valuations[imps[i].type] != advs[advIndexPRD].valuations[imps[i].type]:
+            print("   prd valuation:", advs[advIndexPRD].valuations[imps[i].type], "   exp valuation", advs[advIndexPRD].valuations[imps[i].type])
         # Quick test
         # if advIndexPRD == advIndexEXP:
         #     print("SAME")
@@ -59,7 +70,7 @@ def solve(advs, imps, weights, alpha, betaUpdateType, predAns = None, usePred = 
         # If prd better, allocate to prd
         elif alpha_B * discGainPRD > discGainEXP:
             if advIndexPRD != advIndexEXP:
-                raise Exception("SAME")
+                raise Exception("hi")
             advIndex = advIndexPRD
             t.weight = weights[advIndex][i]
             advs[advIndex].impressions.add(t)
@@ -93,6 +104,5 @@ def solve(advs, imps, weights, alpha, betaUpdateType, predAns = None, usePred = 
     # Clear impressions
     for a in advs:
         a.impressions.clear()
-    print("COUNT", count)
     # Return results
     return xMatrix.ravel(), endTime - startTime
