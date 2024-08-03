@@ -10,7 +10,7 @@ import alg1
 import alg1Pred
 import alg2
 import optimal
-from prediction import createPredictions
+import prediction 
 from tuning import objectiveValue
 
 def main():
@@ -22,15 +22,16 @@ def main():
     numImpsArr = []
     count = 0
     aP = synInst.createAdvs(10,0) # numAdvs, advsSeed
-    predAns = createPredictions(aP, 100)
-    print(predAns)
-    for loop in range(2):
+    # predAns = prediction.createPredictions(aP, 100)
+    # print(predAns)
+    for loop in range(1):
         print(loop)
         count += 20
-        a, i, w = synInst.createSyntheticInstance(10, 10000, advsSeed=0) # numAdvs, numImps, seed, advsSeed, numTypes
+        a, i, w = synInst.createSyntheticInstance(20, 100) # numAdvs, numImps, seed, advsSeed, numTypes
+        corrOptSolved = prediction.createPrediction2(a, i, w)
         # numA, numI, w = bigData()
         # Optimal Algorithm
-        if count <= -1:
+        if count >= -1:
             optSolved, optTimeTaken = (optimal.lpSolve(a,i,w))
             optObj = objectiveValue(optSolved, w)
             optSolvedArr.append(optSolved)
@@ -49,7 +50,7 @@ def main():
         # print("CVXOPT Objective Value:", optObj)
         # print("Time Taken:", optTimeTaken)
         # Algorithm 1
-        alg1Solved, alg1TimeTaken = alg1Pred.solve(a,i,w,1,1,predAns,True)
+        alg1Solved, alg1TimeTaken = alg1Pred.solve(a,i,w,1,1,corrOptSolved)
         alg1Obj = objectiveValue(alg1Solved, w)
         alg1solvedArr.append(alg1Solved)
         alg1TimeArr.append(alg1TimeTaken)
