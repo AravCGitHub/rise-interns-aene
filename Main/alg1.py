@@ -20,7 +20,7 @@ def updateBeta3(adv): # Lowest weight
 
 def solve(advs, imps, weights, alpha, betaUpdateType):
     # Initialize variables
-    dummy = Advertiser(0) # dummy advertiser for impressions that don't get allocated
+    dummy = Advertiser(0,100) # dummy advertiser for impressions that don't get allocated
     betaArr = np.array([0.0]*len(advs))
     weights = np.array(weights).reshape((len(advs), len(imps)))
     objVal = 0

@@ -6,8 +6,8 @@ import sys
 
 class Advertiser:
     
-    def __init__(self, numTypes):
-        self.budget = random.randint(1, 10)
+    def __init__(self, numTypes, bud):
+        self.budget = bud
         self.valuations = []
         self.impressions = SortedList(key=Impression.weight_key) # for alg1
         for x in range(numTypes):
