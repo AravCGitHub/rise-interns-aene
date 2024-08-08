@@ -32,7 +32,10 @@ def createAdvs(numAdvs, numImps, seed = None, numTypes = 10):
     impsPerAdv = round((numImps / numAdvs) * 0.75)
     ran = round(impsPerAdv * 2 / 3)
     for i in range(numAdvs):
-        budget = random.randint(impsPerAdv-ran, impsPerAdv+ran)
+        if max(impsPerAdv-ran,1) != impsPerAdv+ran:
+            budget = random.randint(max(impsPerAdv-ran,1), impsPerAdv+ran)
+        else:
+            budget = impsPerAdv+ran
         advsList.append(Advertiser(numTypes, budget))
     return advsList
 
