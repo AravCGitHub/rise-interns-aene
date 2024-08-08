@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-import advertiser
-import impression
 import synInst
 
 #reading the data

@@ -1,12 +1,10 @@
-import random
+# Unfinished - predictions still in progress
+
 import time
 import numpy as np
-import sys
-import optimal
 from advertiser import Advertiser
-from impression import Impression
 
-def updateBeta1(adv, alpha): # Paper's conservative method
+def updateBeta1(adv, alpha): # Paper's exponential average of weights
     B = adv.budget
     e = (1+1/B) ** B
     left = (e ** (alpha / B) - 1) / (e ** alpha - 1)
@@ -56,12 +54,6 @@ def solve(advs, imps, weights, alpha, betaUpdateType, corrOptSolved, predAns = N
         # print("prd index:", advIndexPRD, "  exp index:",advIndexEXP,"   prd valuation:", advs[advIndexPRD].valuations[imps[i].type], "   exp valuation", advs[advIndexPRD].valuations[imps[i].type])
         if advs[advIndexPRD].valuations[imps[i].type] != advs[advIndexPRD].valuations[imps[i].type]:
             print("   prd valuation:", advs[advIndexPRD].valuations[imps[i].type], "   exp valuation", advs[advIndexPRD].valuations[imps[i].type])
-        # Quick test
-        # if advIndexPRD == advIndexEXP:
-        #     print("SAME")
-        # else:
-        #     print("DIFF")
-        #     count += 1
         # If discGain small, don't allocate
         if discGainEXP <= 0 and discGainPRD <= 0:
             t.weight = 0
@@ -93,9 +85,6 @@ def solve(advs, imps, weights, alpha, betaUpdateType, corrOptSolved, predAns = N
         elif betaUpdateType == 3:
             betaArr[advIndex] = updateBeta3(advs[advIndex])
     endTime = time.time()
-    for a in range(len(advs)):
-        if len(advs[a].impressions) > advs[a].budget:
-            raise Exception("ERROR: Budget exceeded at advertiser", a)
     # Create xMatrix
     xMatrix = np.zeros((len(advs), len(imps)))
     for a in range(len(advs)):

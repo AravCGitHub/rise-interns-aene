@@ -1,8 +1,6 @@
 import random
 from sortedcontainers import SortedList
 from impression import Impression
-import math
-import sys
 
 class Advertiser:
     

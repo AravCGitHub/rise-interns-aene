@@ -1,6 +1,4 @@
-import math
 import random
-import sys
 from impression import Impression
 from advertiser import Advertiser
 

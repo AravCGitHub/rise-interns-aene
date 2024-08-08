@@ -1,8 +1,6 @@
-import random
 import numpy as np
 import time
 from cvxopt import matrix, solvers
-import matplotlib.pyplot as plt
 
 def createMatrixA(advs, imps):
     # Part 1: Advertiser Constraints
@@ -45,7 +43,6 @@ def createVectorB(advs, imps):
     advertisersList = [0] * (len(imps) * len(advs))
     vectorB = budgetsList + impressionsList + advertisersList
     return vectorB
-
 
 def lpSolve(advs, imps, weights):
     weights = [-w for w in weights]

@@ -1,9 +1,8 @@
 import time
 import numpy as np
-import sys
 from advertiser import Advertiser
 
-def updateBeta1(adv, alpha): # Paper's conservative method
+def updateBeta1(adv, alpha): # Paper's exponential average of weights
     B = adv.budget
     e = (1+1/B) ** B
     left = (e ** (alpha / B) - 1) / (e ** alpha - 1)
@@ -55,9 +54,6 @@ def solve(advs, imps, weights, alpha, betaUpdateType):
         elif betaUpdateType == 3:
             betaArr[advIndex] = updateBeta3(advs[advIndex])
     endTime = time.time()
-    for a in range(len(advs)):
-        if len(advs[a].impressions) > advs[a].budget:
-            raise Exception("ERROR: Budget exceeded at advertiser", a)
     # Create xMatrix
     xMatrix = np.zeros((len(advs), len(imps)))
     for a in range(len(advs)):

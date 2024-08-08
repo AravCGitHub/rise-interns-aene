@@ -1,9 +1,6 @@
-import random
 import numpy as np
 from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
-from advertiser import Advertiser
-from impression import Impression
 
 def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
     figure, axis = plt.subplots(1, 2)
@@ -18,7 +15,7 @@ def graphObjandTimeVsImps(objArr, timeArr, numImpsArr):
         timeArrCVX.append(timeArr[i][0])
         timeArrAlg1.append(timeArr[i][1])
         timeArrAlg2.append(timeArr[i][2])
-
+    
     axis[0].plot(numImpsArr, objArrCVX, c='red', label="CVXOPT")
     axis[0].plot(numImpsArr, objArrAlg1, c='green', label='Algorithm 1')
     axis[0].plot(numImpsArr, objArrAlg2, c='blue', label='Algorithm 2')
@@ -65,8 +62,8 @@ def graphDifference(objArr, timeArr, numImpsArr):
     axis[0].legend()
     axis[1].legend()
     plt.tight_layout()
-    # Save and Clear
 
+    # Save and Clear
     plt.savefig('/Users/aravchadha/Documents/GitHub/rise-interns-aene/Images/ObjTimeVsImpsDif.png')
     plt.cla()
     plt.clf()
