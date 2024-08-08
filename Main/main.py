@@ -20,18 +20,17 @@ def main():
     optTimeArr, alg1TimeArr, alg2TimeArr = [], [], []
     optObjArr, alg1ObjArr, alg2ObjArr = [], [], []
     numImpsArr = []
-    count = 0
-    aP = synInst.createAdvs(10,0) # numAdvs, advsSeed
-    # predAns = prediction.createPredictions(aP, 100)
+    count = 10
+    # aP = synInst.createAdvs(10,0) # numAdvs, advsSeed
+    # predAns = createPredictions(aP, 100)
     # print(predAns)
-    for loop in range(1):
+    for loop in range(50):
         print(loop)
         count += 20
-        a, i, w = synInst.createSyntheticInstance(20, 100) # numAdvs, numImps, seed, advsSeed, numTypes
-        corrOptSolved = prediction.createPrediction2(a, i, w)
+        a, i, w = synInst.createSyntheticInstance(50, count) # numAdvs, numImps, seed, advsSeed, numTypes
         # numA, numI, w = bigData()
         # Optimal Algorithm
-        if count >= -1:
+        if count <= -1:
             optSolved, optTimeTaken = (optimal.lpSolve(a,i,w))
             optObj = objectiveValue(optSolved, w)
             optSolvedArr.append(optSolved)
@@ -50,7 +49,7 @@ def main():
         # print("CVXOPT Objective Value:", optObj)
         # print("Time Taken:", optTimeTaken)
         # Algorithm 1
-        alg1Solved, alg1TimeTaken = alg1Pred.solve(a,i,w,1,1,corrOptSolved)
+        alg1Solved, alg1TimeTaken = alg1.solve(a,i,w,1,1)
         alg1Obj = objectiveValue(alg1Solved, w)
         alg1solvedArr.append(alg1Solved)
         alg1TimeArr.append(alg1TimeTaken)
@@ -58,8 +57,8 @@ def main():
         print("Alg1 Objective Value:", alg1Obj)
         print("Time Taken:", alg1TimeTaken)
         # Algorithm 2
-        # alg2Solved, alg2TimeTaken, _ = alg2.solve(a,i,w,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
-        alg2Solved, alg2TimeTaken = alg1.solve(a,i,w,1,1)
+        alg2Solved, alg2TimeTaken, _ = alg2.solve(a,i,w,0.25,0.21,50) # lam = 0.25, eps = 0.21, numRounds = 50
+        # alg2Solved, alg2TimeTaken = alg1.solve(a,i,w,1,3)
         alg2Obj = objectiveValue(alg2Solved, w)
         alg2solvedArr.append(alg2Solved)
         alg2TimeArr.append(alg2TimeTaken)

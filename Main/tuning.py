@@ -23,8 +23,8 @@ def tuneEpsLam():
         weightsArr.append(w)
     eps_lam_dict1 = {}
     eps_lam_dict2 = {}
-    for eps in frange(0.01, 1.0, 0.5):
-        for lam in frange(0.05, 1, 0.5):
+    for eps in frange(0.01, 1.0, 0.05):
+        for lam in frange(0.05, 1, 0.05):
             print("Epsilon:", eps, "Lambda:", lam)
             objArr = []
             for (a, i, weights) in zip(aArr, iArr, weightsArr):
@@ -39,7 +39,7 @@ def tuneEpsLam():
     eps_values1 = sorted(set(eps for eps, _ in eps_lam_dict1.keys()))
     lam_values1 = sorted(set(lam for _, lam in eps_lam_dict1.keys()))
     obj_values = [[eps_lam_dict1[(eps, lam)] for eps in eps_values1] for lam in lam_values1]
-    sns.heatmap(obj_values, cmap = "rocket", xticklabels=eps_values1, yticklabels=lam_values1)
+    sns.heatmap(obj_values, cmap = sns.color_palette("ch:start=.2,rot=-.3", as_cmap=True), xticklabels=eps_values1, yticklabels=lam_values1)
     plt.xlabel('Epsilon')
     plt.ylabel('Lambda')
     plt.title('Objective Value Heatmap')

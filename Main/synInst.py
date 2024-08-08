@@ -23,14 +23,20 @@ def createImps(numImps, seed = None, numTypes = 10):
         impsList.append(Impression(type))
     return impsList
 
-def createAdvs(numAdvs, seed = None, numTypes = 10):
+def createAdvs(numAdvs, numImps, seed = None, numTypes = 10):
     if seed is not None:
         random.seed(seed)
     else:
         random.seed()
     advsList = []
+    impsPerAdv = round((numImps / numAdvs) * 0.75)
+    ran = round(impsPerAdv * 2 / 3)
     for i in range(numAdvs):
-        advsList.append(Advertiser(numTypes))
+        if max(impsPerAdv-ran,1) != impsPerAdv+ran:
+            budget = random.randint(max(impsPerAdv-ran,1), impsPerAdv+ran)
+        else:
+            budget = impsPerAdv+ran
+        advsList.append(Advertiser(numTypes, budget))
     return advsList
 
 def createWeights(advsList, impsList):
@@ -41,7 +47,7 @@ def createWeights(advsList, impsList):
     return weights
 
 def createSyntheticInstance(numAdvs, numImps, advsSeed = None, impsSeed = None, numTypes = 10):
-    advsList = createAdvs(numAdvs, advsSeed, numTypes)
+    advsList = createAdvs(numAdvs, numImps, advsSeed, numTypes)
     impsList = createImps(numImps, impsSeed, numTypes)
     weights = createWeights(advsList, impsList)
     return advsList, impsList, weights
@@ -59,33 +65,3 @@ def corruption2(weights):
         elif random.random() > 0.74:
             weights[i] = capWeight(weights[i]/100)
     return weights
-
-
-# def createSyntheticInstance(numAdvs, numImps, seed = None, corruptNum = 0):
-#     # Seed
-#     if seed is not None:
-#         random.seed(seed)
-#     # Advertisers
-#     numTypes = 10
-#     budgets = createBudgets(numAdvs)
-#     advsList = []
-#     valuations = []
-#     for i in range(numAdvs):
-#         advValuations = []
-#         for x in range(numTypes):
-#             advValuations.append(random.expovariate(1))
-#         valuations.append(advValuations)
-#         advsList.append(Advertiser(budgets[x]))
-#     # Impressions
-#     impsList = []
-#     types = []
-#     for i in range(numImps):
-#         types.append(random.randint(0, numTypes-1))
-#         impsList.append(Impression())
-#     # Weights
-#     weights = []
-#     for a in range(len(advsList)):
-#         for i in range(len(impsList)):
-#             weights.append(valuations[a][types[i]])
-
-#     return advsList, impsList, weights
